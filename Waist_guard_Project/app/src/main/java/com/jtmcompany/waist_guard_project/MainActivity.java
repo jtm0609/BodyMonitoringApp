@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -33,7 +34,27 @@ public class MainActivity extends AppCompatActivity {
 
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             public void onDataReceived(byte[] data, String message) {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                String[] s = message.split("/");
+                int temp = Integer.parseInt(s[0]);
+                int vibration = Integer.parseInt(s[1]);
+                int pulse=Integer.parseInt(s[2]);
+
+                //실시간으로 온도, 충격 쉐어드프리퍼런스에저장
+                SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
+                SharedPreferences.Editor autoLogin = auto.edit();
+                autoLogin.putInt("temp", temp);
+                autoLogin.putInt("pulse",pulse);
+                autoLogin.commit();
+                //충격검사
+                if (vibration == 1) {
+                    autoLogin.putString("vibration", "감지함");
+                    autoLogin.commit();
+                } else {
+                    autoLogin.putString("vibration", "감지못함");
+                    autoLogin.commit();
+                }
+                //if(vibration==1 && temp>=37)
             }
         });
 
