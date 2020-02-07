@@ -44,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
                 SharedPreferences.Editor autoLogin = auto.edit();
                 autoLogin.putInt("temp", temp);
-                autoLogin.putInt("pulse",pulse);
+                autoLogin.putInt("heart",pulse);
                 autoLogin.commit();
                 //충격검사
                 if (vibration == 1) {
-                    autoLogin.putString("vibration", "감지함");
+                    autoLogin.putString("fall", "감지함");
                     autoLogin.commit();
                 } else {
-                    autoLogin.putString("vibration", "감지못함");
+                    autoLogin.putString("fall", "감지못함");
                     autoLogin.commit();
                 }
                 //if(vibration==1 && temp>=37)
@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext()
                         , "Connected to " + name + "\n" + address
                         , Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(),sensor_info.class);
+                startActivity(intent);
+
             }
 
             public void onDeviceDisconnected() { //연결해제
