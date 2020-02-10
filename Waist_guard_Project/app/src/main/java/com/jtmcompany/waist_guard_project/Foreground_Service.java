@@ -22,6 +22,7 @@ public class Foreground_Service extends Service {
     private  IBinder mBinder = new Foreground_Service.Mybinder();
     private  boolean mconnected=false;
     private NotificationManager mNotificationManager;
+    private final String BROADCAST_MESSAGE="com.jtmcompany.waist_guard_project";
 
     public class Mybinder extends Binder {
         public Foreground_Service getService(){
@@ -38,21 +39,7 @@ public class Foreground_Service extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        /*
-        // Android O requires a Notification Channel.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.app_name);
-            // Create the channel for the notification
-            NotificationChannel mChannel =
-                    new NotificationChannel("default", name, NotificationManager.IMPORTANCE_DEFAULT);
-
-            // Set the Notification Channel for the Notification Manager.
-            mNotificationManager.createNotificationChannel(mChannel);
-        }
-
-         */
         bt= new BluetoothSPP(this);
 
         //서비스에서 블루투스연결관리
@@ -64,7 +51,9 @@ public class Foreground_Service extends Service {
                 //연결됨
                 mconnected=true;
 
-
+                //브로드캐스트메시지전송
+                Intent intent = new Intent(BROADCAST_MESSAGE);
+                sendBroadcast(intent);
             }
 
             public void onDeviceDisconnected() { //연결해제
@@ -89,9 +78,10 @@ public class Foreground_Service extends Service {
             public void onDataReceived(byte[] data, String message) {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 String[] s = message.split("/");
-                int temp = Integer.parseInt(s[0]);
-                int vibration = Integer.parseInt(s[1]);
-                int pulse=Integer.parseInt(s[2]);
+                int pulse=Integer.parseInt(s[0]);
+                int temp = Integer.parseInt(s[1]);
+                int vibration = Integer.parseInt(s[2]);
+
 
                 //실시간으로 온도, 충격 쉐어드프리퍼런스에저장
                 SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
