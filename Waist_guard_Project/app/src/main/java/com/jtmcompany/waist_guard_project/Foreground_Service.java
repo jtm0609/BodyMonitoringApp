@@ -20,9 +20,10 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 public class Foreground_Service extends Service {
     private BluetoothSPP bt;
     private  IBinder mBinder = new Foreground_Service.Mybinder();
-    private  boolean mconnected=false;
+    public boolean mconnected=false;
     private NotificationManager mNotificationManager;
-    private final String BROADCAST_MESSAGE="com.jtmcompany.waist_guard_project";
+    private final String BROADCAST_MESSAGE_CONNECT="com.jtmcompany.waist_guard_project.connect";
+    private final String BROADCAST_MESSAGE_DISCONNECT="com.jtmcompany.waist_guard_project.connect";
 
     public class Mybinder extends Binder {
         public Foreground_Service getService(){
@@ -49,10 +50,15 @@ public class Foreground_Service extends Service {
                         , "Connected to " + name + "\n" + address
                         , Toast.LENGTH_SHORT).show();
                 //연결됨
+                //블루투스가연결되있으면 자동으로 화면전환하게 하기위해 SharedPreference 사용
                 mconnected=true;
+                SharedPreferences auto = getSharedPreferences("bt_connect?", Activity.MODE_PRIVATE);
+                SharedPreferences.Editor auto_convert = auto.edit();
+                auto_convert.putBoolean("mconnected", mconnected);
+                auto_convert.commit();
 
                 //브로드캐스트메시지전송
-                Intent intent = new Intent(BROADCAST_MESSAGE);
+                Intent intent = new Intent(BROADCAST_MESSAGE_CONNECT);
                 sendBroadcast(intent);
             }
 
@@ -60,7 +66,15 @@ public class Foreground_Service extends Service {
                 Toast.makeText(getApplicationContext()
                         , "Connection lost", Toast.LENGTH_SHORT).show();
                 //연결끊어짐
+                //SharedPreference 사용
                 mconnected=false;
+                SharedPreferences auto = getSharedPreferences("bt_connect?", Activity.MODE_PRIVATE);
+                SharedPreferences.Editor auto_convert = auto.edit();
+                auto_convert.putBoolean("mconnected", mconnected);
+                auto_convert.commit();
+
+                Intent intent = new Intent(BROADCAST_MESSAGE_DISCONNECT);
+                sendBroadcast(intent);
             }
 
             public void onDeviceConnectionFailed() { //연결실패

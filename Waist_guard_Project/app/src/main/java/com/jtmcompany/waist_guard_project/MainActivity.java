@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Foreground_Service mservice=null;
     private boolean mbound=false;
     private BroadcastReceiver mReceiver=null;
-    private final String BROADCAST_MESSAGE="com.jtmcompany.waist_guard_project";
+    private final String BROADCAST_MESSAGE_COONECT="com.jtmcompany.waist_guard_project.connect";
 
     //서비스 바인드를 위한 메소드
     private ServiceConnection mConnection=new ServiceConnection() {
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
             Foreground_Service.Mybinder binder= (Foreground_Service.Mybinder)service;
             mservice=binder.getService();
             mbound= true;
-
             Intent mIntent = new Intent(getApplicationContext(), Foreground_Service.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(mIntent);
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (!bt.isBluetoothEnabled()) { //블루투스가 꺼져있다면 키도록 액션요청
+
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
             } else {
@@ -98,20 +99,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //블루투스가연결되있으면 자동으로 화면전환
+        SharedPreferences auto=getSharedPreferences("bt_connect?", Activity.MODE_PRIVATE);
+        Boolean mconnected=auto.getBoolean("mconnected",false);
+        if(mconnected) {
+            Intent intent = new Intent(getApplicationContext(), sensor_info.class);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
-    public void onStart() {
-        super.onStart();
-    }
 
+    //액티비티 화면이안보일때 바인드 해제
     @Override
     protected void onStop() {
         super.onStop();
-        /*if(mbound){
+        if(mbound){
             unbindService(mConnection);
             mbound=false;
         }
-         */
+
     }
 
     public void onDestroy() {
@@ -143,11 +151,11 @@ public class MainActivity extends AppCompatActivity {
         if(mReceiver !=null) return;
 
         final IntentFilter mFilter=new IntentFilter();
-        mFilter.addAction(BROADCAST_MESSAGE);
+        mFilter.addAction(BROADCAST_MESSAGE_COONECT);
         mReceiver=new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(intent.getAction().equals(BROADCAST_MESSAGE)){
+                if(intent.getAction().equals(BROADCAST_MESSAGE_COONECT)){
                     Intent sensorintent=new Intent(getApplicationContext(), sensor_info.class);
                     startActivity(sensorintent);
 
