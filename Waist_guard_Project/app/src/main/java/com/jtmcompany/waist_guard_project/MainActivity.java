@@ -1,7 +1,5 @@
 package com.jtmcompany.waist_guard_project;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -14,10 +12,13 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //서비스생성 & 바인드
         bindService(new Intent(this, Foreground_Service.class), mConnection,BIND_AUTO_CREATE);
 
@@ -107,6 +109,17 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+
+        //로그아웃
+        Button logout_bt=findViewById(R.id.logout_button);
+        logout_bt.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+            }
+        });
+
 
     }
 

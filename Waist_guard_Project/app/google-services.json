@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "502092344928",
+    "firebase_url": "https://waistguardproject.firebaseio.com",
+    "project_id": "waistguardproject",
+    "storage_bucket": "waistguardproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502092344928:android:34ac5540af3a5cef5bdd05",
+        "android_client_info": {
+          "package_name": "com.jtmcompany.waist_guard_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502092344928-k7bmk7nhfra6uce9db010dt2pia3bgnt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jtmcompany.waist_guard_project",
+            "certificate_hash": "e7e49edf73685788b2f2118739945c3725ea169b"
+          }
+        },
+        {
+          "client_id": "502092344928-2tn6r4q36b6tjik962qmo043oq7b664r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrRcYX0fLwCJKoXaozYugH90zQJhY2Z84"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502092344928-2tn6r4q36b6tjik962qmo043oq7b664r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

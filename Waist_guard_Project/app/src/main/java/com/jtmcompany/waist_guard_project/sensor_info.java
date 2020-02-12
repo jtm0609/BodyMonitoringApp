@@ -1,7 +1,5 @@
 package com.jtmcompany.waist_guard_project;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class sensor_info extends AppCompatActivity {
     private BroadcastReceiver mReceiver;
@@ -24,6 +24,7 @@ public class sensor_info extends AppCompatActivity {
         final TextView fall_text=findViewById(R.id.fall_text);
         final ProgressBar heart_progress=findViewById(R.id.heart_progress);
         final ProgressBar temp_progress=findViewById(R.id.temp_progress);
+
 
         registerReceiver();
 
