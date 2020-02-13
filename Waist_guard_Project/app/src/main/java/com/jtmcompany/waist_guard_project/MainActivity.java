@@ -116,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
+                Intent intent=new Intent(getApplicationContext(),GateActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -142,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
             if (resultCode == Activity.RESULT_OK)
                 mservice.getBlueToothSPP().connect(data);
