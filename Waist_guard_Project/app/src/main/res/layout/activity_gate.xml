@@ -19,13 +19,14 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="138dp"
+        android:layout_height="52dp"
         android:layout_marginStart="147dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="70dp"
         android:layout_marginBottom="70dp"
         android:text="인증번호 요청"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/verify_code"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -38,11 +39,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="34dp"
         android:layout_marginEnd="51dp"
-        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="전화번호를 입력하세요."
         android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.26"
         app:layout_constraintStart_toEndOf="@+id/textView2"
@@ -83,11 +83,11 @@
 
     <Button
         android:id="@+id/verify_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="177dp"
+        android:layout_width="138dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="147dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="70dp"
         android:layout_marginBottom="150dp"
         android:text="인증번호확인"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -148,5 +148,23 @@
             tools:layout_weight="1" />
 
     </RadioGroup>
+
+    <Button
+        android:id="@+id/resend_bt"
+        android:layout_width="138dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="64dp"
+        android:enabled="true"
+        android:text="재전송"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/verify_code"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phone_number"
+        app:layout_constraintVertical_bias="0.333" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
