@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -25,8 +26,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.ref.WeakReference;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -37,11 +41,18 @@ public class GateActivity extends AppCompatActivity {
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private FirebaseAuth mAuth;
     private String mVerifyId;
-    private boolean mVerification = false;
-    private int resendTime = 20;
+    private EditText mPhone_number;
+    private EditText verify_code;
+    private Button request_Msg_Button;
     private Button resend_button;
     private Button verify_Button;
     Timer timer=null;
+    private int resendTime = 20; //타이머시간
+    private RadioGroup RadioGroup;
+    private RadioButton user_RadioBt;
+    private RadioButton guardian_RadioBt;
+    private DatabaseReference mDatabase= FirebaseDatabase.getInstance() .getReference(); //데이터베이스
+
     //파이어베이스 전화번호입력후 sms를받아 인증하는방식
     //호출순서
 //verifyPhoneNumber()->onCodesent()->onVerificationCompleted()->signinWithPhoneAuthCredential()
@@ -50,12 +61,15 @@ public class GateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gate);
 
-        final Button request_Msg_Button = findViewById(R.id.button); //인증번호요청 버튼
+        request_Msg_Button = findViewById(R.id.button); //인증번호요청 버튼
         verify_Button = findViewById(R.id.verify_button); //인증번호확인 버튼
-        final EditText mPhone_number = findViewById(R.id.phone_number); //전화번호입력 에디트텍스트
-        final EditText verify_code = findViewById(R.id.verify_code); //인증번호입력 에디트텍스트
-        final RadioGroup RadioGroup = findViewById(R.id.radio_group);
-        resend_button = findViewById(R.id.resend_bt);
+        mPhone_number = findViewById(R.id.phone_number); //전화번호입력 에디트텍스트
+        verify_code = findViewById(R.id.verify_code); //인증번호입력 에디트텍스트
+        RadioGroup = findViewById(R.id.radio_group); //라디오그룹
+        resend_button = findViewById(R.id.resend_bt); //재전송버튼
+        user_RadioBt=findViewById(R.id.user_RadioBt); //라디오(사용자)버튼
+        guardian_RadioBt=findViewById(R.id.guadian_RadioBt); //라디오(보호자)버튼
+
 
         //초기(라디오버튼을 누르지않는상태) 에디트텍스트와 버튼을 비활성화시킴
         request_Msg_Button.setEnabled(false);
@@ -154,13 +168,13 @@ public class GateActivity extends AppCompatActivity {
         //라디오버튼을누르면 전화번호입력창과 인증번호요청버튼이 활성화됨
         RadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(android.widget.RadioGroup group, int i) {
+            public void onCheckedChanged(android.widget.RadioGroup group, int id) {
                 if (group == RadioGroup) {
-                    if (i == R.id.user_RadioBt) {
+                    if (id == R.id.user_RadioBt) {
                         mPhone_number.setEnabled(true);
                         request_Msg_Button.setEnabled(true);
 
-                    } else if (i == R.id.guadian_RadioBt) {
+                    } else if (id == R.id.guadian_RadioBt) {
                         mPhone_number.setEnabled(true);
                         request_Msg_Button.setEnabled(true);
                     }
@@ -201,11 +215,30 @@ public class GateActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(GateActivity.this, "로그인성공", Toast.LENGTH_SHORT).show();
                             Log.d("TAKMIN", "signinWithPhoneAuthCredential");
+
+                            //데이터베이스에 저장
+                            User user= new User(mPhone_number.getText().toString());
+                            Map<String, Object> userValue= user.toMap();
+                            //사용자 라디오버튼이 눌려있다면
+                            if(user_RadioBt.isChecked()){
+                                //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
+                                //mDatabase.child("유저").child("사용자").push().setValue(mPhone_number.getText().toString());
+                                mDatabase.child("유저").child("사용자").updateChildren(userValue);
+                            }
+                            //보호자 라디오버튼이 눌려있다면
+                            else if(guardian_RadioBt.isChecked()){
+                                //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
+                                //mDatabase.child("유저").child("보호자").push().setValue(mPhone_number.getText().toString());
+                                mDatabase.child("유저").child("보호자").updateChildren(userValue);
+
+                            }
+
                             //엑티비티전환
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                             finish();
                         }
+
                         //로그인 실패
                         else {
                             Toast.makeText(GateActivity.this, "인증번호가틀립니다.", Toast.LENGTH_SHORT).show();
