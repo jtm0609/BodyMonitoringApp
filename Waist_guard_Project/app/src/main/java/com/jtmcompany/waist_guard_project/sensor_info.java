@@ -1,61 +1,66 @@
 package com.jtmcompany.waist_guard_project;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.tabs.TabLayout;
+import com.jtmcompany.waist_guard_project.Fragment.body_Info;
+import com.jtmcompany.waist_guard_project.Fragment.friend_info;
+import com.jtmcompany.waist_guard_project.Fragment.notification_info;
 
 public class sensor_info extends AppCompatActivity {
     private BroadcastReceiver mReceiver;
     private final String BROADCAST_MESSAGE_DISCONNECT="com.jtmcompany.waist_guard_project.connect";
+    body_Info fragment1;
+    friend_info fragment2;
+    notification_info fragmnet3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_info);
-        final TextView heart_text=findViewById(R.id.heart_text);
-        final TextView temp_text=findViewById(R.id.temp_text);
-        final TextView fall_text=findViewById(R.id.fall_text);
-        final ProgressBar heart_progress=findViewById(R.id.heart_progress);
-        final ProgressBar temp_progress=findViewById(R.id.temp_progress);
 
-
+        //브로드캐스트등록
         registerReceiver();
 
-        //지속적으로 UI갱신을위해 스레드실행
-        new Thread(new Runnable() {
+        //프레그먼트 정의
+        fragment1=new body_Info();
+        fragment2=new friend_info();
+        fragmnet3=new notification_info();
+
+        //처음엑티비티가켜지면 프래그먼트1을 화면에띄움
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment1).commit();
+
+        //탭을눌렀을때 그에맞는 프래그먼트가 디스플레이
+        TabLayout tabs=findViewById(R.id.tab);
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void run() {
-                while(!Thread.interrupted())
-                {
-                    try {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                SharedPreferences auto=getSharedPreferences("auto", Activity.MODE_PRIVATE);
-                                String mfall=auto.getString("fall",null);
-                                int mtemp=auto.getInt("temp",0);
-                                int mheart=auto.getInt("heart",0);
-                                heart_progress.setProgress(mheart);
-                                heart_text.setText(Integer.toString(mheart));
-                                temp_progress.setProgress(mtemp);
-                                temp_text.setText(Integer.toString(mtemp));
-                                fall_text.setText(mfall);
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position=tab.getPosition();
+                Fragment selected=null;
+                if(position==0){
+                    selected=fragment1;
+                }else if(position==1){
+                    selected=fragment2;
+                }else if(position==2) {
+                    selected=fragmnet3;
                 }
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,selected).commit();
             }
-        }).start();
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
+        });
+
+
     }
 
     //브로드캐스트리시버등록
@@ -68,7 +73,7 @@ public class sensor_info extends AppCompatActivity {
 
         mReceiver=new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+                public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals(BROADCAST_MESSAGE_DISCONNECT)){
                     Intent sensorintent = new Intent(getApplicationContext(),MainActivity.class);
                     startActivity(sensorintent);
