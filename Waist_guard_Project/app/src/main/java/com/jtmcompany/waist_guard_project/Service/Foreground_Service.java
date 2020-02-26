@@ -1,4 +1,4 @@
-package com.jtmcompany.waist_guard_project;
+package com.jtmcompany.waist_guard_project.Service;
 
 import android.app.Activity;
 import android.app.NotificationChannel;
@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import com.jtmcompany.waist_guard_project.MainActivity;
+import com.jtmcompany.waist_guard_project.R;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 
@@ -124,7 +127,7 @@ public class Foreground_Service extends Service {
         builder.setContentTitle("포그라운드 서비스");
         builder.setContentText("포그라운드 서비스 실행중");
 
-        Intent notificationIntent=new Intent(this,MainActivity.class);
+        Intent notificationIntent=new Intent(this, MainActivity.class);
         //알림을 눌렀을때 대기하고있던 인텐트가 실행
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
         builder.setContentIntent(pendingIntent);

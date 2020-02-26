@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.jtmcompany.waist_guard_project.Service.Foreground_Service;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
@@ -88,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
 
         //브로드캐스트 등록
         registerReceiver();
-
         Button btnConnect = findViewById(R.id.conn_button); //연결시도
         btnConnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

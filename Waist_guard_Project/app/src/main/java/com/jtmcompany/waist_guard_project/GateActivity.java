@@ -43,6 +43,7 @@ public class GateActivity extends AppCompatActivity {
     private String mVerifyId;
     private EditText mPhone_number;
     private EditText verify_code;
+    private EditText mName;
     private Button request_Msg_Button;
     private Button resend_button;
     private Button verify_Button;
@@ -65,6 +66,7 @@ public class GateActivity extends AppCompatActivity {
         verify_Button = findViewById(R.id.verify_button); //인증번호확인 버튼
         mPhone_number = findViewById(R.id.phone_number); //전화번호입력 에디트텍스트
         verify_code = findViewById(R.id.verify_code); //인증번호입력 에디트텍스트
+        mName=findViewById(R.id.name_editText);
         RadioGroup = findViewById(R.id.radio_group); //라디오그룹
         resend_button = findViewById(R.id.resend_bt); //재전송버튼
         user_RadioBt=findViewById(R.id.user_RadioBt); //라디오(사용자)버튼
@@ -74,6 +76,7 @@ public class GateActivity extends AppCompatActivity {
         //초기(라디오버튼을 누르지않는상태) 에디트텍스트와 버튼을 비활성화시킴
         request_Msg_Button.setEnabled(false);
         verify_Button.setEnabled(false);
+        mName.setEnabled(false);
         mPhone_number.setEnabled(false);
         verify_code.setEnabled(false);
 
@@ -173,10 +176,12 @@ public class GateActivity extends AppCompatActivity {
                     if (id == R.id.user_RadioBt) {
                         mPhone_number.setEnabled(true);
                         request_Msg_Button.setEnabled(true);
+                        mName.setEnabled(true);
 
                     } else if (id == R.id.guadian_RadioBt) {
                         mPhone_number.setEnabled(true);
                         request_Msg_Button.setEnabled(true);
+                        mName.setEnabled(true);
                     }
                 }
 
@@ -217,7 +222,7 @@ public class GateActivity extends AppCompatActivity {
                             Log.d("TAKMIN", "signinWithPhoneAuthCredential");
 
                             //데이터베이스에 저장
-                            User user= new User(mPhone_number.getText().toString());
+                            User user= new User(mName.getText().toString(), mPhone_number.getText().toString());
                             Map<String, Object> userValue= user.toMap();
                             //사용자 라디오버튼이 눌려있다면
                             if(user_RadioBt.isChecked()){

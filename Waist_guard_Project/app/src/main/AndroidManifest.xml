@@ -18,7 +18,7 @@
         <activity android:name=".MainActivity"></activity>
 
         <service
-            android:name=".Foreground_Service"
+            android:name=".Service.Foreground_Service"
             android:enabled="true"
             android:exported="true" />
 
