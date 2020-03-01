@@ -1,6 +1,7 @@
 package com.jtmcompany.waist_guard_project;
 
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -79,6 +80,12 @@ public class GateActivity extends AppCompatActivity {
         mName.setEnabled(false);
         mPhone_number.setEnabled(false);
         verify_code.setEnabled(false);
+
+        //위험권한부여
+        String[] permission={
+                Manifest.permission.READ_CONTACTS
+        };
+        //checkPermission(permission);
 
         //callback
         mcallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -385,5 +392,7 @@ public class GateActivity extends AppCompatActivity {
         if(resendTime<0)
             resendTime=0;
     }
+
+
 
 }

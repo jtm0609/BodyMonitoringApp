@@ -1,9 +1,6 @@
 package com.jtmcompany.waist_guard_project;
 
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +8,7 @@ import java.util.Map;
 public class User {
     private String PhoneNumber;
     private String Name;
-    DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
+    //DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
     public User(String Name, String PhoneNumber){
         this.Name=Name;
         this.PhoneNumber=PhoneNumber;
