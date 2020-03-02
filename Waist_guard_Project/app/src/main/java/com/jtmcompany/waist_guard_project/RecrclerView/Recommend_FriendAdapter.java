@@ -3,6 +3,7 @@ package com.jtmcompany.waist_guard_project.RecrclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,16 @@ import java.util.List;
 
 public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_FriendAdapter.ViewHoloder>{
 
+    public interface MyRecyclerViewClickListener{
+        void onButtonClicked(int position);
+    }
+
+    private MyRecyclerViewClickListener mListener;
+
+    public void setOnClickListener(MyRecyclerViewClickListener listener){
+        mListener=listener;
+    }
+
     List<User> items= new ArrayList<User>();
     @NonNull
     @Override
@@ -25,10 +36,22 @@ public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_Frie
         return new ViewHoloder(itemView);
     }
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull ViewHoloder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHoloder holder, int position) {
         User user=items.get(position);
         holder.setItem(user);
+
+        if(mListener!=null){
+            //final int pos=position;
+            holder.Button.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    mListener.onButtonClicked(holder.getAdapterPosition());
+                }
+            });
+        }
     }
 
     @Override
@@ -43,11 +66,15 @@ public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_Frie
     public class ViewHoloder extends RecyclerView.ViewHolder{
         TextView Name_text;
         TextView Phone_text;
+        Button Button;
         public ViewHoloder(@NonNull View itemView) {
             super(itemView);
             Name_text=itemView.findViewById(R.id.name_text);
             Phone_text=itemView.findViewById(R.id.phone_text);
+            Button=itemView.findViewById(R.id.button);
         }
+
+
 
         public void setItem(User user) {
             Name_text.setText(user.getName());

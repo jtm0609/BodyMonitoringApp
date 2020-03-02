@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +23,7 @@ import com.jtmcompany.waist_guard_project.RecrclerView.Recommend_FriendAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class recommend_friend_info extends AppCompatActivity {
+public class recommend_friend_info extends AppCompatActivity implements Recommend_FriendAdapter.MyRecyclerViewClickListener {
     List<User> friend_Datas=new ArrayList<>();
     private DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
     private RecyclerView recyclerView;
@@ -36,7 +37,8 @@ public class recommend_friend_info extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         final Recommend_FriendAdapter adapter=new Recommend_FriendAdapter();
 
-
+        //어댑터리스너설정
+        adapter.setOnClickListener(this);
 
 
 
@@ -96,13 +98,13 @@ public class recommend_friend_info extends AppCompatActivity {
                 Log.d("TAKK","개수: "+mDataSnapshot.getChildrenCount());
                 for(DataSnapshot snapshot: mDataSnapshot.getChildren()) {
                     Log.d("TAKK", "목록 :" + snapshot.getKey());
-                    Log.d("TAKK", "목록 :" + snapshot.getValue());
+                    Log.d("TAKK", "목록 :" + snapshot.child("폰").getKey());
 
                     //연락처에있는 이름과 데이터베이스에있는 이름이같다면 이름과 연락처를 리싸이클러뷰에추가
                     for(int i=0; i<friend_Datas.size(); i++){
                         if(friend_Datas.get(i).getName().equals(snapshot.getKey())) {
                             Log.d("TRUE","TRUE");
-                            adapter.addItem(new User(snapshot.getKey(), (String) snapshot.getValue()));
+                            adapter.addItem(new User(snapshot.getKey(), snapshot.child("폰").getKey()));
                             recyclerView.setAdapter(adapter);
 
                         }
@@ -122,5 +124,8 @@ public class recommend_friend_info extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onButtonClicked(int position) {
+        Toast.makeText(this, "버튼"+position, Toast.LENGTH_SHORT).show();
+    }
 }

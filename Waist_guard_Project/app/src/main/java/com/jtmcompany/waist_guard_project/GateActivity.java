@@ -3,6 +3,7 @@ package com.jtmcompany.waist_guard_project;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -85,7 +89,7 @@ public class GateActivity extends AppCompatActivity {
         String[] permission={
                 Manifest.permission.READ_CONTACTS
         };
-        //checkPermission(permission);
+        checkPermission(permission);
 
         //callback
         mcallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -211,6 +215,7 @@ public class GateActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
+            Log.d("TAKMIN","HI" );
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -235,13 +240,13 @@ public class GateActivity extends AppCompatActivity {
                             if(user_RadioBt.isChecked()){
                                 //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
                                 //mDatabase.child("유저").child("사용자").push().setValue(mPhone_number.getText().toString());
-                                mDatabase.child("유저").child("사용자").updateChildren(userValue);
+                                mDatabase.child("유저").child("사용자").child(mName.getText().toString()).updateChildren(userValue);
                             }
                             //보호자 라디오버튼이 눌려있다면
                             else if(guardian_RadioBt.isChecked()){
                                 //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
                                 //mDatabase.child("유저").child("보호자").push().setValue(mPhone_number.getText().toString());
-                                mDatabase.child("유저").child("보호자").updateChildren(userValue);
+                                mDatabase.child("유저").child("보호자").child(mName.getText().toString()).updateChildren(userValue);
 
                             }
 
@@ -391,6 +396,28 @@ public class GateActivity extends AppCompatActivity {
         }
         if(resendTime<0)
             resendTime=0;
+    }
+
+    public void checkPermission(String[] permission){
+        ArrayList<String> targetList=new ArrayList<String>();
+
+        for(int i=0; i<permission.length;i++){
+            String curPermission=permission[i];
+            int permissionCheck= ContextCompat.checkSelfPermission(this,curPermission);
+            if(permissionCheck== PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "권한있음", Toast.LENGTH_SHORT).show();
+            } else{
+                Toast.makeText(this, "권한없음", Toast.LENGTH_SHORT).show();
+            }
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,curPermission)){
+                Toast.makeText(this, curPermission+ "권한 설명필요함", Toast.LENGTH_SHORT).show();
+            } else{
+                targetList.add(curPermission);
+            }
+        }
+        String[] targerts=new String[targetList.size()];
+        targetList.toArray(targerts);
+        ActivityCompat.requestPermissions(this,targerts,101);
     }
 
 

@@ -1,6 +1,8 @@
 package com.jtmcompany.waist_guard_project;
 
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,11 +10,15 @@ import java.util.Map;
 public class User {
     private String PhoneNumber;
     private String Name;
+    private String fcmToken= FirebaseInstanceId.getInstance().getToken();
     //DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
+
+
     public User(String Name, String PhoneNumber){
         this.Name=Name;
         this.PhoneNumber=PhoneNumber;
     }
+
 
     public String getPhoneNumber() {
         return PhoneNumber;
@@ -34,8 +40,8 @@ public class User {
     public Map<String, Object> toMap() {
         Map<String,Object> users = new HashMap<>();
         //String key=mDatabase.child("유저").push().getKey();
-        String Key=Name;
-        users.put(Key,PhoneNumber);
+        users.put("폰",PhoneNumber);
+        users.put("토큰",fcmToken);
 
         return users;
     }

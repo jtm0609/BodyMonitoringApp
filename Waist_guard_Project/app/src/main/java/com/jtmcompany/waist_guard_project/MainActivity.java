@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mReceiver=null;
     private final String BROADCAST_MESSAGE_COONECT="com.jtmcompany.waist_guard_project.connect";
 
+
     //서비스 바인드를 위한 메소드
     private ServiceConnection mConnection=new ServiceConnection() {
         //바인드되면 포그라운드서비스 시작시킴
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
+
                 Intent intent=new Intent(getApplicationContext(),GateActivity.class);
                 startActivity(intent);
                 finish();
