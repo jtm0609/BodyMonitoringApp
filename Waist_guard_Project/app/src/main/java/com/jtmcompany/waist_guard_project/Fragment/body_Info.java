@@ -10,16 +10,24 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
 import com.jtmcompany.waist_guard_project.sensor_info;
 
 
 public class body_Info extends Fragment {
 
-
+    TextView user_name_text;
     TextView heart_text;
     TextView temp_text;
     TextView fall_text;
@@ -41,6 +49,7 @@ public class body_Info extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_body__info, container, false);
+        user_name_text=rootView.findViewById(R.id.user_name);
         heart_text = rootView.findViewById(R.id.heart_text);
         temp_text = rootView.findViewById(R.id.temp_text);
         fall_text = rootView.findViewById(R.id.fall_text);
@@ -55,6 +64,27 @@ public class body_Info extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final sensor_info activity = (sensor_info) getActivity();
+
+        //현재 Uid와일치하는 유저클래스의 이름 데이터읽어오기
+        String Uid= FirebaseAuth.getInstance().getUid();
+        DatabaseReference mDatabase;
+        mDatabase=FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("유저").child("사용자").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final User user=dataSnapshot.getValue(User.class);
+                Log.d("TAK2","User:"+ user);
+                final String Name=user.getName();
+                Log.d("TAK2",Name);
+                user_name_text.setText(Name+"님의 생체데이터");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         //지속적으로 UI갱신을위해 스레드실행
         new Thread(new Runnable() {
             @Override

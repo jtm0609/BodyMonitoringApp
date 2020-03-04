@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jtmcompany.waist_guard_project.R;
 import com.jtmcompany.waist_guard_project.RecrclerView.FriendAdapter;
-import com.jtmcompany.waist_guard_project.User;
+import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.recommend_friend_info;
 
 public class friend_info extends Fragment {

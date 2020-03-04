@@ -13,6 +13,20 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="40dp" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
+        android:text="홍길동님의 생체정보"
+        android:gravity="center_horizontal"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.appcompat.widget.AppCompatTextView>
+
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="98dp"

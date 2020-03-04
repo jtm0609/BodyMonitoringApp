@@ -32,10 +32,10 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.jtmcompany.waist_guard_project.Model.User;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -235,18 +235,17 @@ public class GateActivity extends AppCompatActivity {
 
                             //데이터베이스에 저장
                             User user= new User(mName.getText().toString(), mPhone_number.getText().toString());
-                            Map<String, Object> userValue= user.toMap();
                             //사용자 라디오버튼이 눌려있다면
                             if(user_RadioBt.isChecked()){
                                 //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
                                 //mDatabase.child("유저").child("사용자").push().setValue(mPhone_number.getText().toString());
-                                mDatabase.child("유저").child("사용자").child(mName.getText().toString()).updateChildren(userValue);
+                                mDatabase.child("유저").child("사용자").child(user.getUserUid()).setValue(user);
                             }
                             //보호자 라디오버튼이 눌려있다면
                             else if(guardian_RadioBt.isChecked()){
                                 //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
                                 //mDatabase.child("유저").child("보호자").push().setValue(mPhone_number.getText().toString());
-                                mDatabase.child("유저").child("보호자").child(mName.getText().toString()).updateChildren(userValue);
+                                mDatabase.child("유저").child("보호자").child(user.getUserUid()).setValue(user);
 
                             }
 

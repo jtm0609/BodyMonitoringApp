@@ -9,8 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
-import com.jtmcompany.waist_guard_project.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_FriendAdapter.ViewHoloder>{
 
     public interface MyRecyclerViewClickListener{
-        void onButtonClicked(int position);
+        void onButtonClicked(int position, String name);
     }
 
     private MyRecyclerViewClickListener mListener;
@@ -48,7 +48,7 @@ public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_Frie
             holder.Button.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
-                    mListener.onButtonClicked(holder.getAdapterPosition());
+                    mListener.onButtonClicked(holder.getAdapterPosition(),holder.Name_text.getText().toString());
                 }
             });
         }
@@ -72,6 +72,7 @@ public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_Frie
             Name_text=itemView.findViewById(R.id.name_text);
             Phone_text=itemView.findViewById(R.id.phone_text);
             Button=itemView.findViewById(R.id.button);
+
         }
 
 
