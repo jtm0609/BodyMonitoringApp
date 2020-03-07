@@ -1,4 +1,4 @@
-package com.jtmcompany.waist_guard_project;
+package com.jtmcompany.waist_guard_project.Activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +13,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.jtmcompany.waist_guard_project.Fragment.body_Info;
 import com.jtmcompany.waist_guard_project.Fragment.friend_info;
 import com.jtmcompany.waist_guard_project.Fragment.notification_info;
+import com.jtmcompany.waist_guard_project.R;
 
 public class sensor_info extends AppCompatActivity {
     private BroadcastReceiver mReceiver;

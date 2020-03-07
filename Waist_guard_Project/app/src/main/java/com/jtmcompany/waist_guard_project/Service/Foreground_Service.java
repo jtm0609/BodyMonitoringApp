@@ -15,7 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.jtmcompany.waist_guard_project.MainActivity;
+import com.jtmcompany.waist_guard_project.Activity.MainActivity;
 import com.jtmcompany.waist_guard_project.R;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;

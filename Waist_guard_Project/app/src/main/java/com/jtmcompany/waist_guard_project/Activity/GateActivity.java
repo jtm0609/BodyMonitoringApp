@@ -1,4 +1,4 @@
-package com.jtmcompany.waist_guard_project;
+package com.jtmcompany.waist_guard_project.Activity;
 
 
 import android.Manifest;
@@ -33,6 +33,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jtmcompany.waist_guard_project.Model.User;
+import com.jtmcompany.waist_guard_project.R;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -231,10 +232,12 @@ public class GateActivity extends AppCompatActivity {
                         //로그인이 성공하면
                         if (task.isSuccessful()) {
                             Toast.makeText(GateActivity.this, "로그인성공", Toast.LENGTH_SHORT).show();
-                            Log.d("TAKMIN", "signinWithPhoneAuthCredential");
+                            Log.d("TAK", "signinWithPhoneAuthCredential");
 
                             //데이터베이스에 저장
-                            User user= new User(mName.getText().toString(), mPhone_number.getText().toString());
+                            User user= new User();
+                            user.setName(mName.getText().toString());
+                            user.setPhoneNumber(mPhone_number.getText().toString());
                             //사용자 라디오버튼이 눌려있다면
                             if(user_RadioBt.isChecked()){
                                 //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함

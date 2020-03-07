@@ -20,9 +20,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".recommend_friend_info">
+        <activity android:name=".Activity.recommend_friend_info">
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".Activity.MainActivity" />
 
         <service
             android:name=".Service.Foreground_Service"
@@ -35,8 +35,8 @@
 
         </service>
 
-        <activity android:name=".sensor_info" />
-        <activity android:name=".GateActivity">
+        <activity android:name=".Activity.sensor_info" />
+        <activity android:name=".Activity.GateActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,4 +1,4 @@
-package com.jtmcompany.waist_guard_project;
+package com.jtmcompany.waist_guard_project.Activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.jtmcompany.waist_guard_project.R;
 import com.jtmcompany.waist_guard_project.Service.Foreground_Service;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;

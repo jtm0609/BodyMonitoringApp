@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
-import com.jtmcompany.waist_guard_project.sensor_info;
+import com.jtmcompany.waist_guard_project.Activity.sensor_info;
 
 
 public class body_Info extends Fragment {

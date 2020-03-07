@@ -1,4 +1,4 @@
-package com.jtmcompany.waist_guard_project;
+package com.jtmcompany.waist_guard_project.Activity;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jtmcompany.waist_guard_project.Model.User;
+import com.jtmcompany.waist_guard_project.R;
 import com.jtmcompany.waist_guard_project.RecrclerView.Recommend_FriendAdapter;
 
 import org.json.JSONObject;
@@ -102,41 +103,32 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
 
         cursor.close(); //닫지않으면 계속열려있음
 
-    mDatabase.addValueEventListener(new ValueEventListener() {
+        //DB에 데이터읽어어와서 이름과 휴대폰 연락처를불러온이름과 일치하면
+    mDatabase.child("유저").child("사용자").addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             Log.d("Token",FirebaseAuth.getInstance().getUid());
-            DataSnapshot mDataSnapshot=dataSnapshot.child("유저").child("사용자");
-                Log.d("TAKK","개수: "+mDataSnapshot.getChildrenCount());
-                for(DataSnapshot snapshot: mDataSnapshot.getChildren()) {
-                    Log.d("TAKK", "목록 :" + snapshot.child("name").getValue());
-
-                    //연락처에있는 이름과 데이터베이스에있는 이름이같다면 이름과 연락처를 리싸이클러뷰에추가
-                    for(int i=0; i<friend_Datas.size(); i++){
-                        String name=(String)snapshot.child("name").getValue();
-                        if(friend_Datas.get(i).getName().equals(name)){
-                            Log.d("TRUE","TRUE");
-                            String phoneNumber=(String)snapshot.child("phoneNumber").getValue();
-                            adapter.addItem(new User(name, phoneNumber));
-                            recyclerView.setAdapter(adapter);
-
-                        }
-                        else{
-                            Log.d("TRUE","FALSE");
-                        }
+            for(DataSnapshot data: dataSnapshot.getChildren()){
+                User friendUser=data.getValue(User.class);
+                for(int i=0; i<friend_Datas.size(); i++){
+                    if(friend_Datas.get(i).getName().equals(friendUser.getName())){
+                        Log.d("TRUE","TRUE");
+                        adapter.addItem(new User(friendUser.getName(), friendUser.getPhoneNumber()));
+                        recyclerView.setAdapter(adapter);
+                    }
+                    else{
+                        Log.d("TRUE","FALSE");
                     }
                 }
+            }
         }
-
         @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
+        public void onCancelled(@NonNull DatabaseError databaseError) { }
     });
-
 
     }
 
+    //친구신청버튼을 누르면 그사람 Uid를 참조해서 토큰을 얻어오고 토큰을 이용해서 sendPostToFcm메소드호출
     @Override
     public void onButtonClicked(int position, final String name) {
 
@@ -144,40 +136,40 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
         mDatabase.child("유저").child("사용자").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User send_User=dataSnapshot.getValue(User.class);
+                final User send_User=dataSnapshot.getValue(User.class);
                 final String send_name=send_User.getName();
+                Log.d("TAK2","TEST: "+send_User.getPhoneNumber()+" "+send_User.getName());
 
                 mDatabase.child("유저").child("사용자").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot data: dataSnapshot.getChildren()) {
-                            String accept_name=String.valueOf(data.child("name").getValue());
-                            if (name.equals(accept_name)) {
-                                String accept_User_Uid =data.getKey();
+                            final User receive_user=data.getValue(User.class);
+                            String receive_name=receive_user.getName();
+                            if (name.equals(receive_name)) {
+                                String receive_User_Uid =receive_user.getUserUid();
                                 Log.d("Token","accept_User_Uid: "+ data.getKey());
-                                sendPostToFCM(send_name+"님이 친구요청을 보냈습니다.",accept_User_Uid);
+                                sendPostToFCM(send_name+"님이 친구요청을 보냈습니다.",receive_User_Uid);
+                                //보내는유저, 받는유저 멤버변수정
+
+                                //DB에 업데이트(보내는사람은 sendRequest가 true, 받는사람은 receiveRequest가 true)
+                                mDatabase.child("유저").child("사용자").child(send_User.getUserUid()).child("sendRequest").updateChildren(send_User.toMap());
+                                mDatabase.child("유저").child("사용자").child(receive_user.getUserUid()).child("receiveRequest").updateChildren(receive_user.toMap());
                                 break;
                             }
                         }
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
-
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
     }
 
-
+    //http통신을이용하여 파이어베이스서버키와 받아온토큰을 통해 상대방에게 FCM전송
     public void sendPostToFCM(final String message, String Uid){
         mDatabase.child("유저").child("사용자").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -216,11 +208,8 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
 
     }
 

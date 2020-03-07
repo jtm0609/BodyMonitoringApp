@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".recommend_friend_info">
+    tools:context=".Activity.recommend_friend_info">
 
     <LinearLayout
         android:layout_width="match_parent"
