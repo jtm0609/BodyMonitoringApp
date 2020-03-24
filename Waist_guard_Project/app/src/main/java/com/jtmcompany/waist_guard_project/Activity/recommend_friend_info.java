@@ -150,11 +150,10 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
                                 String receive_User_Uid =receive_user.getUserUid();
                                 Log.d("Token","accept_User_Uid: "+ data.getKey());
                                 sendPostToFCM(send_name+"님이 친구요청을 보냈습니다.",receive_User_Uid);
-                                //보내는유저, 받는유저 멤버변수정
 
-                                //DB에 업데이트(보내는사람은 sendRequest가 true, 받는사람은 receiveRequest가 true)
-                                mDatabase.child("유저").child("사용자").child(send_User.getUserUid()).child("sendRequest").updateChildren(send_User.toMap());
-                                mDatabase.child("유저").child("사용자").child(receive_user.getUserUid()).child("receiveRequest").updateChildren(receive_user.toMap());
+                                //DB에 업데이트(누구에게보내는지, 누구로부터받는지가 저장)
+                                mDatabase.child("유저").child("사용자").child(send_User.getUserUid()).child("sendToRequest").updateChildren(receive_user.toMap());
+                                mDatabase.child("유저").child("사용자").child(receive_user.getUserUid()).child("receiveToRequest").updateChildren(send_User.toMap());
                                 break;
                             }
                         }

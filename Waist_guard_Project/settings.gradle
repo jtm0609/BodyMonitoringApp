@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':studyandroid'
 rootProject.name='Waist_guard_Project'

@@ -51,11 +51,11 @@ public class User {
     }
 
 
-    //데이터목록에 추가할때마다 다른키를 갖게하기위해 고유키생성하여 고유키+휴대폰번호를 해쉬맵에 추가
+    //updateChild()를할때 유저클래스의 uid를 이용함
     public Map<String, Object> toMap() {
         Map<String,Object> users = new HashMap<>();
-        //String key=mDatabase.child("유저").push().getKey();
-        users.put("userUid",userUid);
+        //String Key=mDatabase.child("유저").push().getKey();
+        users.put(userUid,userUid);
 
         return users;
     }
