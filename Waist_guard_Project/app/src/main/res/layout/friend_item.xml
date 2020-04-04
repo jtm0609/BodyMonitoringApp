@@ -28,13 +28,20 @@
                 android:text="TextView"
                 android:gravity="center"/>
 
-            <TextView
-                android:id="@+id/Item_Phone"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView"
-                android:gravity="center"/>
+                android:layout_height="wrap_content">
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="생체 보기"
+                    android:layout_weight="1"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="통화"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

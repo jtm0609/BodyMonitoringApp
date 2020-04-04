@@ -27,6 +27,9 @@ public class User {
 
     public User(){ }
 
+    public User(String Name){
+        this.Name=Name;
+    }
 
     public User(String Name, String PhoneNumber){
         this.Name=Name;

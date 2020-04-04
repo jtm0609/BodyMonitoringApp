@@ -54,18 +54,15 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView name_text;
-        TextView phone_text;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name_text=itemView.findViewById(R.id.Item_Name);
-            phone_text=itemView.findViewById(R.id.Item_Phone);
             Log.d("TAK","TEST: "+"ViewHolder");
 
         }
         public void setItem(User item){
             name_text.setText(item.getName());
-            phone_text.setText(item.getPhoneNumber());
             Log.d("TAK","TEST: "+"ViewHolder-setItem");
 
         }

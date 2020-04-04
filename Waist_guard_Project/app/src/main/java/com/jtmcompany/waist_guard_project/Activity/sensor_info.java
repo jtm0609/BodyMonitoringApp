@@ -71,7 +71,6 @@ public class sensor_info extends AppCompatActivity {
 
         final IntentFilter mFilter= new IntentFilter();
         mFilter.addAction(BROADCAST_MESSAGE_DISCONNECT);
-
         mReceiver=new BroadcastReceiver() {
             @Override
                 public void onReceive(Context context, Intent intent) {

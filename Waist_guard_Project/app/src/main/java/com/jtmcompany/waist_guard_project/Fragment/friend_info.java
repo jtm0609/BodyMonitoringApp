@@ -9,16 +9,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.jtmcompany.waist_guard_project.Activity.recommend_friend_info;
+import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
 import com.jtmcompany.waist_guard_project.RecrclerView.FriendAdapter;
-import com.jtmcompany.waist_guard_project.Model.User;
-import com.jtmcompany.waist_guard_project.Activity.recommend_friend_info;
 
 public class friend_info extends Fragment {
+    DatabaseReference mdatabase= FirebaseDatabase.getInstance().getReference();
+    String myUid= FirebaseAuth.getInstance().getUid();
 
 
     public friend_info() {
@@ -32,8 +41,6 @@ public class friend_info extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
         // Inflate the layout for this fragment
         ViewGroup rootView=(ViewGroup)inflater.inflate(R.layout.fragment_friend_info, container, false);
         RecyclerView recyclerView= rootView.findViewById(R.id.recycler);
@@ -41,13 +48,26 @@ public class friend_info extends Fragment {
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
-        FriendAdapter adapter= new FriendAdapter();
-        adapter.addItem(new User("김민수","010-1000-1000"));
-        Log.d("TAK","TEST: "+"addItem1");
-        adapter.addItem(new User("홍길동","010-3333-3333"));
-        Log.d("TAK","TEST: "+"addItem2");
-        adapter.addItem(new User("홍길동","010-3333-3333"));
-        Log.d("TAK","TEST: "+"addItem3");
+        final FriendAdapter adapter= new FriendAdapter();
+
+        //DB friend의 차일드들의 리스트를 프레그먼트에 띄움
+        mdatabase.child("유저").child("사용자").child(myUid).child("friend").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot data:dataSnapshot.getChildren()){
+                    Log.d("taktak","test: "+ data);
+                    String name=data.getKey();
+                    adapter.addItem(new User(name));
+                    //파베는 비동기로작동하기때문에 다음코드를 넣어야함
+                    // 리사이클러뷰가 어댑터등록되는시점보다 파베내용을 addItem하는시점이 더늦음
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
 
         recyclerView.setAdapter(adapter);
         Log.d("TAK","TEST: "+"setAdapter");
