@@ -58,7 +58,7 @@ public class User {
     public Map<String, Object> toMap() {
         Map<String,Object> users = new HashMap<>();
         //String Key=mDatabase.child("유저").push().getKey();
-        users.put(userUid,userUid);
+        users.put(Name,userUid);
 
         return users;
     }

@@ -1,7 +1,6 @@
 package com.jtmcompany.waist_guard_project.Fragment;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,9 +19,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jtmcompany.waist_guard_project.Activity.sensor_info;
 import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
-import com.jtmcompany.waist_guard_project.Activity.sensor_info;
 
 
 public class body_Info extends Fragment {
@@ -33,6 +32,7 @@ public class body_Info extends Fragment {
     TextView fall_text;
     ProgressBar heart_progress;
     ProgressBar temp_progress;
+
 
     public body_Info() {
 
@@ -66,10 +66,10 @@ public class body_Info extends Fragment {
         final sensor_info activity = (sensor_info) getActivity();
 
         //현재 Uid와일치하는 유저클래스의 이름 데이터읽어오기
-        String Uid= FirebaseAuth.getInstance().getUid();
+        String myUid= FirebaseAuth.getInstance().getUid();
         DatabaseReference mDatabase;
         mDatabase=FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("유저").child("사용자").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("유저").child("사용자").child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final User user=dataSnapshot.getValue(User.class);
@@ -85,6 +85,25 @@ public class body_Info extends Fragment {
             }
         });
 
+        mDatabase.child("유저").child("사용자").child(myUid).child("sensorInfo").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String mvibration = (String)dataSnapshot.child("vibration").getValue();
+                String mtemp = (String) dataSnapshot.child("temp").getValue();
+                String mheart = (String) dataSnapshot.child("pulse").getValue();
+                heart_progress.setProgress(Integer.parseInt(mheart));
+                heart_text.setText(mheart);
+                temp_progress.setProgress(Integer.parseInt(mtemp));
+                temp_text.setText(mtemp);
+                fall_text.setText(mvibration);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+/*
         //지속적으로 UI갱신을위해 스레드실행
         new Thread(new Runnable() {
             @Override
@@ -105,14 +124,14 @@ public class body_Info extends Fragment {
                             public void run() {
                                 SharedPreferences auto = activity.getSharedPreferences("auto", activity.MODE_PRIVATE);
                                 String mfall = auto.getString("fall", null);
-                                int mtemp = auto.getInt("temp", 0);
-                                int mheart = auto.getInt("heart", 0);
+                                int mtemp = auto.getString("temp", 0);
+                                int mheart = auto.getString("heart", 0);
                                 Log.d("TAKMIN", "TEST: " + mheart);
-                                heart_progress.setProgress(mheart);
-                                heart_text.setText(Integer.toString(mheart));
-                                temp_progress.setProgress(mtemp);
-                                temp_text.setText(Integer.toString(mtemp));
-                                fall_text.setText(mfall);
+                                heart_progress.setProgress(Integer.parseInt(mheart));
+                                heart_text.setText(mheart);
+                                temp_progress.setProgress(Integer.parseInt(mtemp));
+                                temp_text.setText(mtemp);
+                                fall_text.setText(mvibration);
                             }
                         });
                     } catch (InterruptedException e) {
@@ -126,6 +145,8 @@ public class body_Info extends Fragment {
             }
         }).start();
 
+
+ */
     }
 
     @Override

@@ -54,8 +54,8 @@ String Myname;
 
                 Iterable<DataSnapshot> send_Users=dataSnapshot.child(MyUid).child("receiveToRequest").getChildren();
                 for(DataSnapshot send_User: send_Users){
-                    final String send_Users_Uid=send_User.getKey();
-                    Log.d("TAAK","TEST: "+send_Users_Uid);
+                    final String send_Users_Uid=(String)send_User.getValue();
+                    Log.d("TAAK","TEST2: "+send_Users_Uid);
                     mdatabase.child("유저").child("사용자").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

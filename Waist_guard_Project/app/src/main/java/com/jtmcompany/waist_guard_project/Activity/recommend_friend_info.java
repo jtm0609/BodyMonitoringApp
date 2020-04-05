@@ -34,7 +34,7 @@ import java.util.List;
 public class recommend_friend_info extends AppCompatActivity implements Recommend_FriendAdapter.MyRecyclerViewClickListener {
     List<User> friend_Datas=new ArrayList<>();
     private DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
-    private String Uid= FirebaseAuth.getInstance().getUid();
+    private String myUid= FirebaseAuth.getInstance().getUid();
     private RecyclerView recyclerView;
     private final String FCM_MESSAGE_URL="https://fcm.googleapis.com/fcm/send";
     private final String SEVER_KEY="AAAAdOcJLmA:APA91bEl0w-VPDhYIiEGGmuZTmKAfvPFuU2QHM_ozx9MmCuwJZh2O4VsRKvU4lUz8hihHoIKV5r5DYvth9_MaxXIpPIQjLwbAZpqfs7m7ZhVGh6BZMYxdsNOLLez3o26G9evrb-AHvgr";
@@ -133,7 +133,7 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
     public void onButtonClicked(int position, final String name) {
 
         Toast.makeText(this, "버튼"+position, Toast.LENGTH_SHORT).show();
-        mDatabase.child("유저").child("사용자").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("유저").child("사용자").child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final User send_User=dataSnapshot.getValue(User.class);
@@ -147,6 +147,9 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
                             final User receive_user=data.getValue(User.class);
                             String receive_name=receive_user.getName();
                             if (name.equals(receive_name)) {
+                                Log.d("test3","name:"+ name);
+                                Log.d("test3","receivename:"+ receive_name);
+                                Log.d("test3","receveUid:"+ receive_user.getUserUid());
                                 String receive_User_Uid =receive_user.getUserUid();
                                 Log.d("Token","accept_User_Uid: "+ data.getKey());
                                 sendPostToFCM(send_name+"님이 친구요청을 보냈습니다.",receive_User_Uid);

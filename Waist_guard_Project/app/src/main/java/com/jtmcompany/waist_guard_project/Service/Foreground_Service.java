@@ -15,8 +15,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.jtmcompany.waist_guard_project.Activity.MainActivity;
 import com.jtmcompany.waist_guard_project.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 
@@ -27,6 +33,10 @@ public class Foreground_Service extends Service {
     private NotificationManager mNotificationManager;
     private final String BROADCAST_MESSAGE_CONNECT="com.jtmcompany.waist_guard_project.connect";
     private final String BROADCAST_MESSAGE_DISCONNECT="com.jtmcompany.waist_guard_project.connect";
+    DatabaseReference mDatabasae= FirebaseDatabase.getInstance().getReference();
+    String myUid= FirebaseAuth.getInstance().getUid();
+    Map<String,Object> sensorInfo_map;
+
 
     public class Mybinder extends Binder {
         public Foreground_Service getService(){
@@ -43,6 +53,8 @@ public class Foreground_Service extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        //센서정보 수집할때 map사용
+        sensorInfo_map= new HashMap<>();
 
         bt= new BluetoothSPP(this);
 
@@ -95,26 +107,38 @@ public class Foreground_Service extends Service {
             public void onDataReceived(byte[] data, String message) {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 String[] s = message.split("/");
-                int pulse=Integer.parseInt(s[0]);
-                int temp = Integer.parseInt(s[1]);
+                String pulse=s[0];
+                String temp = s[1];
                 int vibration = Integer.parseInt(s[2]);
 
 
                 //실시간으로 온도, 충격 쉐어드프리퍼런스에저장
+                sensorInfo_map.put("pulse",pulse);
+                sensorInfo_map.put("temp",temp);
+
+
+                /*
                 SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
                 SharedPreferences.Editor autoLogin = auto.edit();
-                autoLogin.putInt("temp", temp);
-                autoLogin.putInt("heart",pulse);
+                autoLogin.putString("temp", temp);
+                autoLogin.putString("heart",pulse);
                 autoLogin.commit();
+
+                 */
                 //충격검사
                 if (vibration == 1) {
-                    autoLogin.putString("fall", "감지함");
-                    autoLogin.commit();
+                    sensorInfo_map.put("vibration","감지함");
+                    //autoLogin.putString("fall", "감지함");
+                    //autoLogin.commit();
                 } else {
-                    autoLogin.putString("fall", "감지못함");
-                    autoLogin.commit();
+                    sensorInfo_map.put("vibration","감지못함");
+                    //autoLogin.putString("fall", "감지못함");
+                    //autoLogin.commit();
                 }
-                //if(vibration==1 && temp>=37)
+
+
+                mDatabasae.child("유저").child("사용자").child(myUid).child("sensorInfo").updateChildren(sensorInfo_map);
+
             }
         });
         //Service가 강제 종료되었을 경우 시스템이 다시 Service를 재시작

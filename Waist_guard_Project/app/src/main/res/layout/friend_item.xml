@@ -35,7 +35,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="생체 보기"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:id="@+id/sensorInfoBt"/>
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
