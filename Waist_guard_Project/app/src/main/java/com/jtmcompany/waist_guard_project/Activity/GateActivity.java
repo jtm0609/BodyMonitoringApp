@@ -2,7 +2,9 @@ package com.jtmcompany.waist_guard_project.Activity;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,7 +61,7 @@ public class GateActivity extends AppCompatActivity {
     private RadioButton user_RadioBt;
     private RadioButton guardian_RadioBt;
     private DatabaseReference mDatabase= FirebaseDatabase.getInstance() .getReference(); //데이터베이스
-
+    SharedPreferences sharedpref;
     //파이어베이스 전화번호입력후 sms를받아 인증하는방식
     //호출순서
 //verifyPhoneNumber()->onCodesent()->onVerificationCompleted()->signinWithPhoneAuthCredential()
@@ -68,6 +70,7 @@ public class GateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gate);
 
+        sharedpref=getSharedPreferences("user", Activity.MODE_PRIVATE);
         request_Msg_Button = findViewById(R.id.button); //인증번호요청 버튼
         verify_Button = findViewById(R.id.verify_button); //인증번호확인 버튼
         mPhone_number = findViewById(R.id.phone_number); //전화번호입력 에디트텍스트
@@ -88,7 +91,8 @@ public class GateActivity extends AppCompatActivity {
 
         //위험권한부여
         String[] permission={
-                Manifest.permission.READ_CONTACTS
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.CALL_PHONE
         };
         checkPermission(permission);
 
@@ -215,12 +219,18 @@ public class GateActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
+        //사용자라면
+        if (currentUser != null && !sharedpref.getBoolean("isGuardian",false)) {
             Log.d("TAKMIN","HI" );
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
-        } else {
+            //보호자라면
+        } else if(currentUser!=null && sharedpref.getBoolean("isGuardian",false)){
+            Intent intent = new Intent(getApplicationContext(), sensor_info.class);
+            startActivity(intent);
+            finish();
+
         }
     }
 
@@ -233,7 +243,7 @@ public class GateActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(GateActivity.this, "로그인성공", Toast.LENGTH_SHORT).show();
                             Log.d("TAK", "signinWithPhoneAuthCredential");
-
+                            SharedPreferences.Editor sharedprefEdit=sharedpref.edit();
                             //데이터베이스에 저장
                             User user= new User();
                             user.setName(mName.getText().toString());
@@ -242,20 +252,34 @@ public class GateActivity extends AppCompatActivity {
                             if(user_RadioBt.isChecked()){
                                 //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
                                 //mDatabase.child("유저").child("사용자").push().setValue(mPhone_number.getText().toString());
+
+                                sharedprefEdit.putBoolean("isGuardian",false);
+                                sharedprefEdit.commit();
+
                                 mDatabase.child("유저").child("사용자").child(user.getUserUid()).setValue(user);
+                                //엑티비티전환
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                                finish();
                             }
                             //보호자 라디오버튼이 눌려있다면
                             else if(guardian_RadioBt.isChecked()){
                                 //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
                                 //mDatabase.child("유저").child("보호자").push().setValue(mPhone_number.getText().toString());
+                                sharedprefEdit.putBoolean("isGuardian",true);
+                                sharedprefEdit.commit();
+
                                 mDatabase.child("유저").child("보호자").child(user.getUserUid()).setValue(user);
+                                //엑티비티전환
+                                Intent intent = new Intent(getApplicationContext(), sensor_info.class);
+                                startActivity(intent);
+                                finish();
 
                             }
 
-                            //엑티비티전환
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish();
+
+
+
                         }
 
                         //로그인 실패

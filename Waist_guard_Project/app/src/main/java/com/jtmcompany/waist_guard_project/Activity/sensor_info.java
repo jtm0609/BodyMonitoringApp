@@ -1,13 +1,21 @@
 package com.jtmcompany.waist_guard_project.Activity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.jtmcompany.waist_guard_project.Fragment.body_Info;
@@ -15,53 +23,84 @@ import com.jtmcompany.waist_guard_project.Fragment.friend_info;
 import com.jtmcompany.waist_guard_project.Fragment.notification_info;
 import com.jtmcompany.waist_guard_project.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class sensor_info extends AppCompatActivity {
     private BroadcastReceiver mReceiver;
     private final String BROADCAST_MESSAGE_DISCONNECT="com.jtmcompany.waist_guard_project.connect";
-    body_Info fragment1;
-    friend_info fragment2;
-    notification_info fragmnet3;
+    ViewPager viewPager;
+    boolean isGuardian=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_info);
 
+        //보호자라면 true 사용자라면 false
+        SharedPreferences sharedPref=getSharedPreferences("user", Activity.MODE_PRIVATE);
+        isGuardian=sharedPref.getBoolean("isGuardian",false);
+        Log.d("tak5","test: "+isGuardian);
+
+
         //브로드캐스트등록
         registerReceiver();
 
-        //프레그먼트 정의
-        fragment1=new body_Info();
-        fragment2=new friend_info();
-        fragmnet3=new notification_info();
-
-        //처음엑티비티가켜지면 프래그먼트1을 화면에띄움
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment1).commit();
-
-        //탭을눌렀을때 그에맞는 프래그먼트가 디스플레이
+        //탭레이아웃정의
         TabLayout tabs=findViewById(R.id.tab);
-        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position=tab.getPosition();
-                Fragment selected=null;
-                if(position==0){
-                    selected=fragment1;
-                }else if(position==1){
-                    selected=fragment2;
-                }else if(position==2) {
-                    selected=fragmnet3;
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,selected).commit();
+
+        //뷰페이저 정의 & 탭레이아웃과 연결
+        viewPager=findViewById(R.id.container);
+        viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        tabs.setupWithViewPager(viewPager);
+
+    }
+
+    //뷰페이저 어댑터
+    class MyPagerAdapter extends FragmentPagerAdapter {
+        List<Fragment> fragments=new ArrayList<>();
+        List<String> titles_list=new ArrayList<>();
+        public MyPagerAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+
+            //사용자라면
+            if(!isGuardian) {
+                titles_list.add("생체정보");
+                titles_list.add("친구목록");
+                titles_list.add("알림");
+
+                fragments.add(new body_Info());
+                fragments.add(new friend_info());
+                fragments.add(new notification_info());
+            }
+            //보호자라면
+            else if(isGuardian){
+
+                titles_list.add("친구목록");
+                titles_list.add("알림");
+
+                fragments.add(new friend_info());
+                fragments.add(new notification_info());
             }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+        }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) { }
-        });
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return this.fragments.get(position);
+        }
 
+        @Override
+        public int getCount() {
+            return this.fragments.size();
+        }
 
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+
+            return titles_list.get(position);
+        }
     }
 
     //브로드캐스트리시버등록

@@ -51,26 +51,11 @@
             android:visibility="visible"
             app:tabBackground="@color/design_default_color_primary">
 
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tab1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="생체정보" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="친구목록" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="알림"/>
         </com.google.android.material.tabs.TabLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/container"
         android:layout_width="409dp"
         android:layout_height="622dp"

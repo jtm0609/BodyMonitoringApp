@@ -1,4 +1,4 @@
-package com.jtmcompany.waist_guard_project.RecrclerView;
+package com.jtmcompany.waist_guard_project.Adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +19,7 @@ import java.util.Map;
 public class NotiAdapter extends RecyclerView.Adapter<NotiAdapter.ViewHoler> {
 
     ArrayList<String> names=new ArrayList<String>();
+    //각 아이템을 클릭했을때 선택한사람의 정보(이름,uid)를 전달하기위해 해쉬맵사용
     Map<String,String> name_Uid=new HashMap<>();
 
     public interface NotiRecyclerViewClcikListener{

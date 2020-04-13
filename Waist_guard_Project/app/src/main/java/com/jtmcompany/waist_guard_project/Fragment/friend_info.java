@@ -1,7 +1,10 @@
 package com.jtmcompany.waist_guard_project.Fragment;
 
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,14 +25,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jtmcompany.waist_guard_project.Activity.friend_sensor_info;
 import com.jtmcompany.waist_guard_project.Activity.recommend_friend_info;
+import com.jtmcompany.waist_guard_project.Adapter.FriendAdapter;
 import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
-import com.jtmcompany.waist_guard_project.RecrclerView.FriendAdapter;
 
 public class friend_info extends Fragment implements FriendAdapter.friendRecyclerListener{
     DatabaseReference mdatabase= FirebaseDatabase.getInstance().getReference();
     String myUid= FirebaseAuth.getInstance().getUid();
-
+    String user_kinds;
+    String object_user_kinds;
 
     public friend_info() {
         // Required empty public constructor
@@ -41,11 +45,23 @@ public class friend_info extends Fragment implements FriendAdapter.friendRecycle
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //자신이 보호자면 user_kinds=보호자, 상대방은 object_user_kinds=사용자
+        SharedPreferences sharedPref=getActivity().getSharedPreferences("user", Activity.MODE_PRIVATE);
+        boolean isGuardian=sharedPref.getBoolean("isGuardian",false);
+        if(isGuardian) {
+            user_kinds="보호자";
+            object_user_kinds="사용자";
+        }
+        else {
+            user_kinds="사용자";
+            object_user_kinds="보호자";
+        }
+
 
         // Inflate the layout for this fragment
         ViewGroup rootView=(ViewGroup)inflater.inflate(R.layout.fragment_friend_info, container, false);
         RecyclerView recyclerView= rootView.findViewById(R.id.recycler);
-       FloatingActionButton Friend_Add_Bt=rootView.findViewById(R.id.friend_add_bt);
+        FloatingActionButton Friend_Add_Bt=rootView.findViewById(R.id.friend_add_bt);
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
@@ -53,7 +69,7 @@ public class friend_info extends Fragment implements FriendAdapter.friendRecycle
         adapter.setOnclickListener(this);
 
         //DB friend의 차일드들의 리스트를 프레그먼트에 띄움
-        mdatabase.child("유저").child("사용자").child(myUid).child("friend").addListenerForSingleValueEvent(new ValueEventListener() {
+        mdatabase.child("유저").child(user_kinds).child(myUid).child("friend").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot data:dataSnapshot.getChildren()){
@@ -90,15 +106,30 @@ public class friend_info extends Fragment implements FriendAdapter.friendRecycle
         return rootView;
     }
 
-
+    //친구의 생체보기를 클릭했을때
     @Override
-    public void onButtonClicked(int position, String name, String uid) {
+    public void onSensorButtonClicked(int position, String name, String uid) {
         Log.d("tak33","test: "+position+ name+ uid);
         Intent intent = new Intent(getActivity(), friend_sensor_info.class);
         intent.putExtra("name",name);
         intent.putExtra("uid",uid);
         startActivity(intent);
 
+    }
+
+    //친구에게 통화버튼을 클릭했을때
+    @Override
+    public void onCallButtonClicked(int position, String uid) {
+        mdatabase.child("유저").child(object_user_kinds).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String number= (String) dataSnapshot.child("phoneNumber").getValue();
+                startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:"+number)));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
 }
 

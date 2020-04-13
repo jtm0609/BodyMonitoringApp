@@ -1,6 +1,8 @@
 package com.jtmcompany.waist_guard_project.Activity;
 
+import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,9 +21,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jtmcompany.waist_guard_project.Adapter.Recommend_FriendAdapter;
 import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
-import com.jtmcompany.waist_guard_project.RecrclerView.Recommend_FriendAdapter;
 
 import org.json.JSONObject;
 
@@ -38,7 +40,8 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
     private RecyclerView recyclerView;
     private final String FCM_MESSAGE_URL="https://fcm.googleapis.com/fcm/send";
     private final String SEVER_KEY="AAAAdOcJLmA:APA91bEl0w-VPDhYIiEGGmuZTmKAfvPFuU2QHM_ozx9MmCuwJZh2O4VsRKvU4lUz8hihHoIKV5r5DYvth9_MaxXIpPIQjLwbAZpqfs7m7ZhVGh6BZMYxdsNOLLez3o26G9evrb-AHvgr";
-
+    String user_kinds;
+    String object_user_kinds;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,8 +106,20 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
 
         cursor.close(); //닫지않으면 계속열려있음
 
-        //DB에 데이터읽어어와서 이름과 휴대폰 연락처를불러온이름과 일치하면
-    mDatabase.child("유저").child("사용자").addListenerForSingleValueEvent(new ValueEventListener() {
+        //자신이 보호자면 user_kinds=보호자, 상대방은 object_user_kinds=사용자
+        SharedPreferences sharedPref=getSharedPreferences("user", Activity.MODE_PRIVATE);
+        boolean isGuardian=sharedPref.getBoolean("isGuardian",false);
+        if(isGuardian) {
+            user_kinds="보호자";
+            object_user_kinds="사용자";
+        }
+        else {
+            user_kinds="사용자";
+            object_user_kinds="보호자";
+        }
+
+    //DB에 데이터읽어어와서 이름과 휴대폰 연락처를불러온이름과 일치하면
+    mDatabase.child("유저").child(object_user_kinds).addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             Log.d("Token",FirebaseAuth.getInstance().getUid());
@@ -133,14 +148,14 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
     public void onButtonClicked(int position, final String name) {
 
         Toast.makeText(this, "버튼"+position, Toast.LENGTH_SHORT).show();
-        mDatabase.child("유저").child("사용자").child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("유저").child(user_kinds).child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final User send_User=dataSnapshot.getValue(User.class);
                 final String send_name=send_User.getName();
                 Log.d("TAK2","TEST: "+send_User.getPhoneNumber()+" "+send_User.getName());
 
-                mDatabase.child("유저").child("사용자").addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabase.child("유저").child(object_user_kinds).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot data: dataSnapshot.getChildren()) {
@@ -155,8 +170,8 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
                                 sendPostToFCM(send_name+"님이 친구요청을 보냈습니다.",receive_User_Uid);
 
                                 //DB에 업데이트(친구요청이 누구에게보내는지, 누구로부터받는지가 저장)
-                                mDatabase.child("유저").child("사용자").child(send_User.getUserUid()).child("sendToRequest").updateChildren(receive_user.toMap());
-                                mDatabase.child("유저").child("사용자").child(receive_user.getUserUid()).child("receiveToRequest").updateChildren(send_User.toMap());
+                                mDatabase.child("유저").child(user_kinds).child(send_User.getUserUid()).child("sendToRequest").updateChildren(receive_user.toMap());
+                                mDatabase.child("유저").child(object_user_kinds).child(receive_user.getUserUid()).child("receiveToRequest").updateChildren(send_User.toMap());
                                 break;
                             }
                         }
@@ -173,7 +188,7 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
 
     //http통신을이용하여 파이어베이스서버키와 받아온토큰을 통해 상대방에게 FCM전송
     public void sendPostToFCM(final String message, String Uid){
-        mDatabase.child("유저").child("사용자").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("유저").child(object_user_kinds).child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 final User user=dataSnapshot.getValue(User.class);
@@ -193,9 +208,12 @@ public class recommend_friend_info extends AppCompatActivity implements Recommen
                                 conn.setRequestMethod("POST");
                                 conn.setDoOutput(true);
                                 conn.setDoInput(true);
-                                conn.addRequestProperty("Authorization","key=" + SEVER_KEY);
-                                conn.setRequestProperty("Accept","application/json");
-                                conn.setRequestProperty("Content-type","application/json");
+                                //API 키는 호출하는 프로젝트, 즉 API를 호출하는 애플리케이션이나 사이트를 식별합니다.
+                                //인증 토큰은 사용자, 즉 앱이나 사이트를 사용하고 있는 사람을 식별합니다.
+                                conn.addRequestProperty("Authorization","key=" + SEVER_KEY); //서버키가 필요한이유: 서버에서 어떤프로젝트의 서비스요청인지 확인하기위해 필요
+                                conn.setRequestProperty("Accept","application/json"); //서버 Response Data를 JSON 형식의 타입으로 요청.
+                                conn.setRequestProperty("Content-type","application/json"); //Request Body(데이터) 전달시 application/json로 서버에 전달
+
                                 OutputStream os = conn.getOutputStream();
                                 os.write(root.toString().getBytes("utf-8"));
                                 os.flush();

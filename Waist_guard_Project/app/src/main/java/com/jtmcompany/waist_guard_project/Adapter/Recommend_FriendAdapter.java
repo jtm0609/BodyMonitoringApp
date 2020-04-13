@@ -1,4 +1,4 @@
-package com.jtmcompany.waist_guard_project.RecrclerView;
+package com.jtmcompany.waist_guard_project.Adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

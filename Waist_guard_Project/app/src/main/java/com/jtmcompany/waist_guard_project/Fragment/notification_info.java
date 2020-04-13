@@ -1,6 +1,8 @@
 package com.jtmcompany.waist_guard_project.Fragment;
 
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,16 +20,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jtmcompany.waist_guard_project.Adapter.NotiAdapter;
 import com.jtmcompany.waist_guard_project.R;
-import com.jtmcompany.waist_guard_project.RecrclerView.NotiAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class notification_info extends Fragment implements NotiAdapter.NotiRecyclerViewClcikListener {
+
+    //친구가 친구신청을 보내면 이 프레그먼트에서 알림이나옴
+
 DatabaseReference mdatabase= FirebaseDatabase.getInstance().getReference();
 String MyUid= FirebaseAuth.getInstance().getUid();
 String Myname;
+String object_user_kinds;
+String user_kinds;
     public notification_info() {
         // Required empty public constructor
     }
@@ -44,7 +51,20 @@ String Myname;
         final NotiAdapter adapter=new NotiAdapter();
         adapter.setOnClickListener(this);
 
-        mdatabase.child("유저").child("사용자").addListenerForSingleValueEvent(new ValueEventListener() {
+        //자신이 보호자면 user_kinds=보호자, 상대방은 object_user_kinds=사용자
+        SharedPreferences sharedPref=getActivity().getSharedPreferences("user", Activity.MODE_PRIVATE);
+
+        boolean isGuardian=sharedPref.getBoolean("isGuardian",false);
+        if(isGuardian) {
+            user_kinds="보호자";
+            object_user_kinds="사용자";
+        }
+        else {
+            user_kinds="사용자";
+            object_user_kinds="보호자";
+        }
+
+        mdatabase.child("유저").child(user_kinds).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -52,11 +72,12 @@ String Myname;
                 Myname=(String)dataSnapshot.child(MyUid).child("name").getValue();
 
 
+                //DB에저장된 내가 받은 친구요청리스트에있는 UID를 읽어아서 요청을 보낸사람들의 리스트를 리싸이클러뷰에 보여줌
                 Iterable<DataSnapshot> send_Users=dataSnapshot.child(MyUid).child("receiveToRequest").getChildren();
                 for(DataSnapshot send_User: send_Users){
                     final String send_Users_Uid=(String)send_User.getValue();
                     Log.d("TAAK","TEST2: "+send_Users_Uid);
-                    mdatabase.child("유저").child("사용자").addListenerForSingleValueEvent(new ValueEventListener() {
+                    mdatabase.child("유저").child(object_user_kinds).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String send_Name =(String)dataSnapshot.child(send_Users_Uid).child("name").getValue();
@@ -69,13 +90,9 @@ String Myname;
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
                         }
                     });
                 }
-
-
-
             }
 
             @Override
@@ -92,19 +109,21 @@ String Myname;
         return rootView;
     }
 
+
+    //리싸이클러뷰에 있는 아이템의 친구수락버튼을 누르면 각유저 DB의 friend차일드에 추가됨
     @Override
     public void onButtonClicked(int position, String name,String uid) {
        Log.d("tak",name+position);
 
         //내 친구목록창입장
-        Map<String,Object> YourUid_Name=new HashMap<>();
-        YourUid_Name.put(name,uid);
-        mdatabase.child("유저").child("사용자").child(MyUid).child("friend").updateChildren(YourUid_Name);
+        Map<String,Object> yourUid_Name=new HashMap<>();
+        yourUid_Name.put(name,uid);
+        mdatabase.child("유저").child(user_kinds).child(MyUid).child("friend").updateChildren(yourUid_Name);
 
         //상대방 친구목록창입장
-        Map<String,Object> MyUid_Name=new HashMap<>();
-        MyUid_Name.put(Myname,MyUid);
-        mdatabase.child("유저").child("사용자").child(uid).child("friend").updateChildren(MyUid_Name);
+        Map<String,Object> myUid_Name=new HashMap<>();
+        myUid_Name.put(Myname,MyUid);
+        mdatabase.child("유저").child(object_user_kinds).child(uid).child("friend").updateChildren(myUid_Name);
 
     }
 }

@@ -1,4 +1,4 @@
-package com.jtmcompany.waist_guard_project.RecrclerView;
+package com.jtmcompany.waist_guard_project.Adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +23,8 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     private friendRecyclerListener mListener;
 
     public interface friendRecyclerListener{
-        void onButtonClicked(int position, String name, String uid);
+        void onSensorButtonClicked(int position, String name, String uid);
+        void onCallButtonClicked(int position,String uid);
     }
 
     public void setOnclickListener(friendRecyclerListener listener){
@@ -54,12 +55,19 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
 
         final String name=user.getName();
         if(mListener!=null) {
+            final String uid=friend_name_uid.get(name);
             holder.sensorInfoBt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    String uid=friend_name_uid.get(name);
-                    mListener.onButtonClicked(holder.getAdapterPosition(),name,uid);
+                    mListener.onSensorButtonClicked(holder.getAdapterPosition(),name,uid);
+                }
+            });
+
+            holder.callBt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.onCallButtonClicked(holder.getAdapterPosition(),uid);
                 }
             });
         }
@@ -82,10 +90,12 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView name_text;
         Button sensorInfoBt;
+        Button callBt;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name_text=itemView.findViewById(R.id.Item_Name);
             sensorInfoBt=itemView.findViewById(R.id.sensorInfoBt);
+            callBt=itemView.findViewById(R.id.callBt);
             Log.d("TAK","TEST: "+"ViewHolder");
 
         }
