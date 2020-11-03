@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.body_Info">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="40dp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
+        android:text="홍길동님의 생체정보"
+        android:gravity="center_horizontal"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@android:color/black">
+
+    </androidx.appcompat.widget.AppCompatTextView>
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="98dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="64dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:srcCompat="@drawable/heart" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="98dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:srcCompat="@drawable/temperature" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="98dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="70dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        app:srcCompat="@drawable/fall" />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="심박수"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/heart_progress"
+        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+    <TextView
+        android:id="@+id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="체온"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toStartOf="@+id/temp_progress"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+    <TextView
+        android:id="@+id/tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="낙상"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+        app:layout_constraintEnd_toStartOf="@+id/fall_text"
+        app:layout_constraintHorizontal_bias="0.418"
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintTop_toTopOf="@+id/imageView5" />
+
+<ProgressBar
+android:id="@+id/heart_progress"
+style="?android:attr/progressBarStyleHorizontal"
+android:layout_width="120dp"
+android:layout_height="28dp"
+android:layout_marginEnd="40dp"
+app:layout_constraintBottom_toBottomOf="@+id/tv"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintTop_toTopOf="@+id/tv" />
+
+<ProgressBar
+android:id="@+id/temp_progress"
+style="?android:attr/progressBarStyleHorizontal"
+android:layout_width="120dp"
+android:layout_height="28dp"
+android:layout_marginEnd="40dp"
+app:layout_constraintBottom_toBottomOf="@+id/tv2"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintTop_toTopOf="@+id/tv2" />
+
+<TextView
+android:id="@+id/fall_text"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginEnd="61dp"
+android:text="감지못함"
+    android:textColor="@android:color/holo_red_dark"
+    android:textSize="18sp"
+app:layout_constraintBottom_toBottomOf="@+id/tv3"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintTop_toTopOf="@+id/tv3" />
+
+<TextView
+android:id="@+id/heart_text"
+android:layout_width="55dp"
+android:layout_height="24dp"
+android:layout_marginStart="296dp"
+android:layout_marginTop="17dp"
+android:layout_marginEnd="60dp"
+android:layout_marginBottom="72dp"
+android:gravity="center"
+android:text="0"
+app:layout_constraintBottom_toTopOf="@+id/temp_progress"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toBottomOf="@+id/heart_progress"
+    android:textColor="@android:color/holo_red_dark"
+    android:textSize="18sp"/>
+
+<TextView
+android:id="@+id/temp_text"
+android:layout_width="55dp"
+android:layout_height="24dp"
+android:layout_marginStart="296dp"
+android:layout_marginTop="14dp"
+android:layout_marginEnd="60dp"
+android:layout_marginBottom="120dp"
+android:gravity="center"
+android:text="0"
+    android:textColor="@android:color/holo_red_dark"
+    android:textSize="18sp"
+app:layout_constraintBottom_toTopOf="@+id/fall_text"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toBottomOf="@+id/temp_progress"
+app:layout_constraintVertical_bias="0.052" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
