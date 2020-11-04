@@ -33,6 +33,7 @@
 Firebase, Glide
 
 ## 설계
+![컴공설 nerd설계](https://user-images.githubusercontent.com/48284360/98101591-c9f3d680-1ed5-11eb-90ec-a6b98c9763d0.png)
 
 
 
