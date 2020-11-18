@@ -38,6 +38,7 @@ Java, Android, Firebase, Glide<br><br><br>
 
 
 ## 스크린샷
+#### 메인 화면
 <div>
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079157-b5ecac80-1eb6-11eb-83b7-3e9cfa7fd642.jpg"> 
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079151-b4bb7f80-1eb6-11eb-8a18-bb7c89d45b1e.jpg"> <br>
@@ -57,7 +58,7 @@ Java, Android, Firebase, Glide<br><br><br>
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079140-b2592580-1eb6-11eb-9a89-3d40435ac11e.jpg">
 </div>
 
-#### 공통
+#### 공통 페이지
 <div>
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079156-b5541600-1eb6-11eb-8f3a-714138e056cb.jpg">
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079162-b71dd980-1eb6-11eb-96dd-8de9c92eaf7f.jpg">
