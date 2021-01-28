@@ -20,13 +20,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jtmcompany.waist_guard_project.Adapter.NotiAdapter;
+import com.jtmcompany.waist_guard_project.Adapter.NotiRecyclerAdapter;
 import com.jtmcompany.waist_guard_project.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class notification_info extends Fragment implements NotiAdapter.NotiRecyclerViewClcikListener {
+public class NotiInfoFragment extends Fragment implements NotiRecyclerAdapter.NotiRecyclerViewClcikListener {
 
     //친구가 친구신청을 보내면 이 프레그먼트에서 알림이나옴
 
@@ -35,7 +35,7 @@ String MyUid= FirebaseAuth.getInstance().getUid();
 String Myname;
 String object_user_kinds;
 String user_kinds;
-    public notification_info() {
+    public NotiInfoFragment() {
         // Required empty public constructor
     }
 
@@ -48,7 +48,7 @@ String user_kinds;
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
-        final NotiAdapter adapter=new NotiAdapter();
+        final NotiRecyclerAdapter adapter=new NotiRecyclerAdapter();
         adapter.setOnClickListener(this);
 
         //자신이 보호자면 user_kinds=보호자, 상대방은 object_user_kinds=사용자

@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder>{
+public class FriendRecyclerAdapter extends RecyclerView.Adapter<FriendRecyclerAdapter.ViewHolder>{
     private Context context;
 
-    public FriendAdapter(Context context) {
+    public FriendRecyclerAdapter(Context context) {
         this.context = context;
     }
 
@@ -58,9 +58,6 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     //holder=onCreateViewHolder에서 반환한 ViewHolder
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-
-
-
         Log.d("TAK","TEST: "+"onBindViewHolder");
         User user=items.get(position);
         holder.setItem(user);
@@ -71,7 +68,6 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
             holder.sensorInfoBt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     mListener.onSensorButtonClicked(holder.getAdapterPosition(),name,uid);
                 }
             });
@@ -90,7 +86,6 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     public int getItemCount() {
         return items.size();
     }
-
     public void addItem(User item){
         items.add(item);
     }

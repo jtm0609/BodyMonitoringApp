@@ -42,7 +42,7 @@
         </service>
 
         <activity android:name=".Activity.MainActivity" />
-        <activity android:name=".Activity.AuthActivity">
+        <activity android:name=".Activity.PhoneAuthActivity">
 
         </activity>
 

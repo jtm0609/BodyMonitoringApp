@@ -16,9 +16,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NotiAdapter extends RecyclerView.Adapter<NotiAdapter.ViewHoler> {
+public class NotiRecyclerAdapter extends RecyclerView.Adapter<NotiRecyclerAdapter.ViewHoler> {
 
     ArrayList<String> names=new ArrayList<String>();
+
     //각 아이템을 클릭했을때 선택한사람의 정보(이름,uid)를 전달하기위해 해쉬맵사용
     Map<String,String> name_Uid=new HashMap<>();
 

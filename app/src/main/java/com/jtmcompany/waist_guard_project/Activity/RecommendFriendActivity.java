@@ -23,7 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jtmcompany.waist_guard_project.Adapter.Recommend_FriendAdapter;
+import com.jtmcompany.waist_guard_project.Adapter.RecommendFriendRecyclerAdapter;
 import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
 
@@ -35,15 +35,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecommendFriendActivity extends AppCompatActivity implements Recommend_FriendAdapter.MyRecyclerViewClickListener {
-    List<User> friend_Datas=new ArrayList<>();
+//추천친구 액티비티
+public class RecommendFriendActivity extends AppCompatActivity implements RecommendFriendRecyclerAdapter.MyRecyclerViewClickListener {
+    private List<User> friend_Datas=new ArrayList<>();
     private DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
     private String myUid= FirebaseAuth.getInstance().getUid();
     private RecyclerView recyclerView;
     private final String FCM_MESSAGE_URL="https://fcm.googleapis.com/fcm/send";
     private final String SEVER_KEY="AAAAdOcJLmA:APA91bEl0w-VPDhYIiEGGmuZTmKAfvPFuU2QHM_ozx9MmCuwJZh2O4VsRKvU4lUz8hihHoIKV5r5DYvth9_MaxXIpPIQjLwbAZpqfs7m7ZhVGh6BZMYxdsNOLLez3o26G9evrb-AHvgr";
-    String user_kinds;
-    String object_user_kinds;
+    private String user_kinds,object_user_kinds;
+    private Toolbar toolbar;
+    private RecommendFriendRecyclerAdapter adapter;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -58,29 +60,43 @@ public class RecommendFriendActivity extends AppCompatActivity implements Recomm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommend_friend_info);
-        Toolbar toolbar=findViewById(R.id.recommendFriendToolbar);
+        init();
+        initSet();
+        useContentResolver(); //전화번호 목록가져오기
+        addRecommendFriend(); //추천친구 추가
+    }
+
+    public void init(){
+        toolbar=findViewById(R.id.recommendFriendToolbar);
+        recyclerView=findViewById(R.id.recycler);
+        adapter=new RecommendFriendRecyclerAdapter();
+
+        //사용자정보가져오기 : ex)만약 자신이 보호자면-> user_kinds=보호자, 상대방은 object_user_kinds=사용자
+        SharedPreferences sharedPref=getSharedPreferences("user", Activity.MODE_PRIVATE);
+        boolean isGuardian=sharedPref.getBoolean("isGuardian",false);
+        if(isGuardian) {
+            user_kinds="보호자";
+            object_user_kinds="사용자";
+        }
+        else {
+            user_kinds="사용자";
+            object_user_kinds="보호자";
+        }
+    }
+
+    public void initSet(){
+        //툴바 설정
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        recyclerView=findViewById(R.id.recycler);
-
-        LinearLayoutManager layoutManager=new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-        recyclerView.setLayoutManager(layoutManager);
-        final Recommend_FriendAdapter adapter=new Recommend_FriendAdapter();
-
-        //어댑터리스너설정
+        //리싸이클러뷰, 어댑터 설정 및 연결
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         adapter.setOnClickListener(this);
+    }
 
-
-
-
-        //전화번호를 가져오기 위해 contentResolver를 사용. ->context()필요
-        //전화번호 데이터를 가져오는 커넥터 역할.
-        ContentResolver resolver=getContentResolver();
-
-        //데이터가 있는 테이블 주소가져오기
-        Uri phoneUri= ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+    public void useContentResolver(){
+        ContentResolver resolver=getContentResolver(); //전화번호 데이터를 가져오는 커넥터 역할. (전화번호를 가져오기 위해 contentResolve를 사용)
+        Uri phoneUri= ContactsContract.CommonDataKinds.Phone.CONTENT_URI; //데이터가 있는 테이블 주소가져오기
 
         //테이블에서 가져올 컬럼명을 정의
         String proj[]={ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
@@ -93,8 +109,7 @@ public class RecommendFriendActivity extends AppCompatActivity implements Recomm
         //cursor에 데이터 존재여부
         if(cursor !=null){
             while(cursor.moveToNext()){
-                int index=cursor.getColumnIndex(proj[0]);
-                int id=cursor.getInt(index);
+                int index;
 
                 index=cursor.getColumnIndex(proj[1]);
                 String name=cursor.getString(index);
@@ -115,55 +130,40 @@ public class RecommendFriendActivity extends AppCompatActivity implements Recomm
                 User friend_Data=new User(name,tel);
 
                 friend_Datas.add(friend_Data);
-                //리스트에 열 하나하나의 데이터 클래스가 저장됨 -> 주소록만큼 리스트개수가 생성됨
+
             }
         }
         Log.d("TTT","test:" + friend_Datas.size());
-
-
         cursor.close(); //닫지않으면 계속열려있음
+    }
 
-        //자신이 보호자면 user_kinds=보호자, 상대방은 object_user_kinds=사용자
-        SharedPreferences sharedPref=getSharedPreferences("user", Activity.MODE_PRIVATE);
-        boolean isGuardian=sharedPref.getBoolean("isGuardian",false);
-        if(isGuardian) {
-            user_kinds="보호자";
-            object_user_kinds="사용자";
-        }
-        else {
-            user_kinds="사용자";
-            object_user_kinds="보호자";
-        }
-
-    //DB에 데이터읽어어와서 전화번호와 휴대폰 연락처의 전화번호와 일치하면
-    mDatabase.child("유저").child(object_user_kinds).addListenerForSingleValueEvent(new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            Log.d("Token",FirebaseAuth.getInstance().getUid());
-            for(DataSnapshot data: dataSnapshot.getChildren()){
-                User friendUser=data.getValue(User.class);
-                for(int i=0; i<friend_Datas.size(); i++){
-                    if(friend_Datas.get(i).getPhoneNumber().equals(friendUser.getPhoneNumber())){
-                        Log.d("TRUE","TRUE");
-                        adapter.addItem(new User(friendUser.getName(), friendUser.getPhoneNumber()));
-                        recyclerView.setAdapter(adapter);
-                    }
-                    else{
-                        Log.d("TRUE","FALSE");
+    //파이어베이스DB에서 데이터읽어와서, DB에저장된 전화번호와 연락처의 전화번호와 일치하면-> 친구 추천창에 추가
+    public void addRecommendFriend(){
+        mDatabase.child("유저").child(object_user_kinds).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("Token",FirebaseAuth.getInstance().getUid());
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    User friendUser=data.getValue(User.class);
+                    for(int i=0; i<friend_Datas.size(); i++){
+                        if(friend_Datas.get(i).getPhoneNumber().equals(friendUser.getPhoneNumber())){
+                            Log.d("TRUE","TRUE");
+                            adapter.addItem(new User(friendUser.getName(), friendUser.getPhoneNumber()));
+                            recyclerView.setAdapter(adapter);
+                        }
+                        else{ Log.d("TRUE","FALSE"); }
                     }
                 }
             }
-        }
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) { }
-    });
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
 
-    //친구신청버튼을 누르면 그사람 Uid를 참조해서 토큰을 얻어오고 토큰을 이용해서 sendPostToFcm메소드호출
+
+    //버튼콜백 : 친구신청버튼을 누르면 -> 그사람 Uid를 참조해서 토큰을 얻어오고, 토큰을 이용해서 sendPostToFcm메소드호출
     @Override
     public void onButtonClicked(int position, final String name) {
-
         Toast.makeText(this, "버튼"+position, Toast.LENGTH_SHORT).show();
         mDatabase.child("유저").child(user_kinds).child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

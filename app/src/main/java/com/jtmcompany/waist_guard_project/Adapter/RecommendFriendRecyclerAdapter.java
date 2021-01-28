@@ -15,7 +15,7 @@ import com.jtmcompany.waist_guard_project.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_FriendAdapter.ViewHoloder>{
+public class RecommendFriendRecyclerAdapter extends RecyclerView.Adapter<RecommendFriendRecyclerAdapter.ViewHoloder>{
 
     public interface MyRecyclerViewClickListener{
         void onButtonClicked(int position, String name);
@@ -64,8 +64,7 @@ public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_Frie
     }
 
     public class ViewHoloder extends RecyclerView.ViewHolder{
-        TextView Name_text;
-        TextView Phone_text;
+        TextView Name_text,Phone_text;
         Button Button;
         public ViewHoloder(@NonNull View itemView) {
             super(itemView);
@@ -74,8 +73,6 @@ public class Recommend_FriendAdapter extends RecyclerView.Adapter<Recommend_Frie
             Button=itemView.findViewById(R.id.button);
 
         }
-
-
 
         public void setItem(User user) {
             Name_text.setText(user.getName());

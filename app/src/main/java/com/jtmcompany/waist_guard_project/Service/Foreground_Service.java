@@ -43,8 +43,8 @@ public class Foreground_Service extends Service {
         public Foreground_Service getService(){
             return Foreground_Service.this;
         }
-
     }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

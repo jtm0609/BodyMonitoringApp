@@ -24,7 +24,7 @@ import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
 
 
-public class body_Info extends Fragment {
+public class BodyInfoFragment extends Fragment {
 
     TextView user_name_text;
     TextView heart_text;
@@ -34,7 +34,7 @@ public class body_Info extends Fragment {
     ProgressBar temp_progress;
 
 
-    public body_Info() {
+    public BodyInfoFragment() {
 
     }
 

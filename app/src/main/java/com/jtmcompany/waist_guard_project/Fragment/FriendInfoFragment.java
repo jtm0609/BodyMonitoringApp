@@ -25,17 +25,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jtmcompany.waist_guard_project.Activity.FriendSensorInfoActivity;
 import com.jtmcompany.waist_guard_project.Activity.RecommendFriendActivity;
-import com.jtmcompany.waist_guard_project.Adapter.FriendAdapter;
+import com.jtmcompany.waist_guard_project.Adapter.FriendRecyclerAdapter;
 import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
 
-public class friend_info extends Fragment implements FriendAdapter.friendRecyclerListener{
+public class FriendInfoFragment extends Fragment implements FriendRecyclerAdapter.friendRecyclerListener{
     DatabaseReference mdatabase= FirebaseDatabase.getInstance().getReference();
     String myUid= FirebaseAuth.getInstance().getUid();
     String user_kinds;
     String object_user_kinds;
 
-    public friend_info() {
+    public FriendInfoFragment() {
         // Required empty public constructor
     }
 
@@ -65,7 +65,7 @@ public class friend_info extends Fragment implements FriendAdapter.friendRecycle
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
-        final FriendAdapter adapter= new FriendAdapter(getContext());
+        final FriendRecyclerAdapter adapter= new FriendRecyclerAdapter(getContext());
         adapter.setOnclickListener(this);
 
         //DB friend의 차일드들의 리스트를 프레그먼트에 띄움

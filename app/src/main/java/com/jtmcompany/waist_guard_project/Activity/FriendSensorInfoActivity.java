@@ -1,5 +1,6 @@
 package com.jtmcompany.waist_guard_project.Activity;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,23 +17,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jtmcompany.waist_guard_project.R;
 
+//보호자기능: 친구(사용자)의 센서정보 모니터링 엑티비티
 public class FriendSensorInfoActivity extends AppCompatActivity {
-    TextView name_text;
-    TextView heart_text;
-    TextView temp_text;
-    TextView vibrate_text;
-    ProgressBar heart_progress;
-    ProgressBar temp_progress;
+    TextView name_text,heart_text,temp_text,vibrate_text;
+    ProgressBar heart_progress,temp_progress;
     DatabaseReference mDatabase;
     ValueEventListener valueEventListener;
+    String name,uid;
 
-    String uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_sensor_info);
-        Log.d("tak","onCreate");
+        init();
+        callbackInit();
+        initSet();
+    }
 
+    public void init(){
         name_text=findViewById(R.id.name_textvw);
         heart_text=findViewById(R.id.heart_sub_text);
         temp_text=findViewById(R.id.temp_sub_text);
@@ -42,12 +44,11 @@ public class FriendSensorInfoActivity extends AppCompatActivity {
         mDatabase= FirebaseDatabase.getInstance().getReference();
 
         Intent intent=getIntent();
-        String name=intent.getStringExtra("name");
+        name=intent.getStringExtra("name");
         uid=intent.getStringExtra("uid");
-        Log.d("tak333","name: "+name+" uid: "+uid);
+    }
 
-        name_text.setText(name);
-
+    public void callbackInit(){
         valueEventListener= new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -63,13 +64,13 @@ public class FriendSensorInfoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
+    }
 
+    public void initSet(){
+        name_text.setText(name);
         mDatabase.child("유저").child("사용자").child(uid).child("sensorInfo").addValueEventListener(valueEventListener);
-
     }
 
     //액티비티가 종료될대도 비동기작업이 되므로 종료시 비동기작업을 종료시켜여야함( 하지만 onPause에서 하는게 더낫다고함)
@@ -78,6 +79,7 @@ public class FriendSensorInfoActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d("tak333","onDestroy");
         mDatabase.child("유저").child("사용자").child(uid).child("sensorInfo").removeEventListener(valueEventListener);
+
     }
 
 }
