@@ -41,7 +41,7 @@ Java, Android, Firebase(Auth,DB,FCM), Glide<br><br>
 #### 메인 화면
 <div>
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079157-b5ecac80-1eb6-11eb-83b7-3e9cfa7fd642.jpg"> 
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079151-b4bb7f80-1eb6-11eb-8a18-bb7c89d45b1e.jpg"> <br>
+<img width="200" src="https://user-images.githubusercontent.com/48284360/98079151-b4bb7f80-1eb6-11eb-8a18-bb7c89d45b1e.jpg"> <br><br>
 </div>
 
 #### 사용자 페이지
@@ -49,13 +49,14 @@ Java, Android, Firebase(Auth,DB,FCM), Glide<br><br>
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079161-b71dd980-1eb6-11eb-9ebc-867bddcfe1ae.jpg">
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079148-b422e900-1eb6-11eb-8b35-c1e597499a08.jpg"> 
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079153-b5541600-1eb6-11eb-880c-b4095247be11.jpg">
-<br>
+<br><br>
 </div>
 
 #### 보호자 페이지
 <div>
 <img width="200"  src="https://user-images.githubusercontent.com/48284360/98079164-b7b67000-1eb6-11eb-9f8a-8bec319dca89.jpg">
 <img width="200" src="https://user-images.githubusercontent.com/48284360/98079140-b2592580-1eb6-11eb-9a89-3d40435ac11e.jpg">
+  <br><br>
 </div>
 
 #### 공통 페이지
