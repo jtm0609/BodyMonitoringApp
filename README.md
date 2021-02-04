@@ -20,7 +20,7 @@
 * 파이어베이스 RealTimeDB를 통해 유저(사용자, 보호자) 관리
 * 아두이노와 앱과의 연동 구현(블루투스 통신)
 * 센서를 통해 실시간으로 생체정보(심박수, 체온, 낙상) 모니터링 가능
-* 서비스를 통한 항상 센서가 동작하게 구현 및 블루투스 연결, 끊김 체크
+* Service와 BroadCast Receiver를 통해 항상 센서가 동작하게 구현 및 블루투스 연결, 끊김 체크
 * 친구목록 기능 구현
 * 친구요청 기능 구현 + FCM을 통한 친구요청 알림서비스 구현
 * 추천 친구 기능 구현(컨텐트 프로바이더 사용)
@@ -30,7 +30,7 @@
 
 
 ## 기술스택
-Java, Android, Firebase, Glide<br><br>
+Java, Android, Firebase(Auth,DB,FCM), Glide<br><br>
 
 ## 시스템 아키텍처
 ![컴공설 nerd설계](https://user-images.githubusercontent.com/48284360/98101591-c9f3d680-1ed5-11eb-90ec-a6b98c9763d0.png)<br><br>
