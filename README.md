@@ -36,7 +36,7 @@
 * Firebase RealtimeDB
 * Firebase Cloud Messaging
 * Glide
-* <br><br>
+<br><br>
 
 ## 시스템 아키텍처
 ![컴공설 nerd설계](https://user-images.githubusercontent.com/48284360/98101591-c9f3d680-1ed5-11eb-90ec-a6b98c9763d0.png)<br><br>
