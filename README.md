@@ -30,8 +30,7 @@
 
 
 ## 기술스택
-* Java
-* Android
+* Android (
 * Firebase Auth
 * Firebase RealtimeDB
 * Firebase Cloud Messaging
