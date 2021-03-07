@@ -31,6 +31,7 @@
 
 ## 기술스택
 * Android (JAVA)
+* BlueTooth API
 * Firebase Auth
 * Firebase RealtimeDB
 * Firebase Cloud Messaging
