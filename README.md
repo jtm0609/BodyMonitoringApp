@@ -44,34 +44,13 @@
 
 
 ## 스크린샷
-#### 메인 화면
 <div>
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079157-b5ecac80-1eb6-11eb-83b7-3e9cfa7fd642.jpg"> 
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079151-b4bb7f80-1eb6-11eb-8a18-bb7c89d45b1e.jpg"> <br><br>
+  <img  src="https://user-images.githubusercontent.com/48284360/111037574-05944380-8468-11eb-9702-06b5067b1efb.png">
+<img src="https://user-images.githubusercontent.com/48284360/111037568-0331e980-8468-11eb-9493-f58350438489.png"> 
+<img  src="https://user-images.githubusercontent.com/48284360/111037571-04fbad00-8468-11eb-8ad3-c2ed49dfa8ca.png">
+<img  src="https://user-images.githubusercontent.com/48284360/111037572-05944380-8468-11eb-8912-6f0bc5dfaee8.png"> <br><br>
 </div>
 
-#### 사용자 페이지
-<div>
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079161-b71dd980-1eb6-11eb-9ebc-867bddcfe1ae.jpg">
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079148-b422e900-1eb6-11eb-8b35-c1e597499a08.jpg"> 
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079153-b5541600-1eb6-11eb-880c-b4095247be11.jpg">
-<br><br>
-</div>
-
-#### 보호자 페이지
-<div>
-<img width="200"  src="https://user-images.githubusercontent.com/48284360/98079164-b7b67000-1eb6-11eb-9f8a-8bec319dca89.jpg">
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079140-b2592580-1eb6-11eb-9a89-3d40435ac11e.jpg">
-  <br><br>
-</div>
-
-#### 공통 페이지
-<div>
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079156-b5541600-1eb6-11eb-8f3a-714138e056cb.jpg">
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079162-b71dd980-1eb6-11eb-96dd-8de9c92eaf7f.jpg">
-<img width="200" src="https://user-images.githubusercontent.com/48284360/98079159-b6854300-1eb6-11eb-816f-51bbc12c42d6.jpg">
-
-</div>
 
 ## 개선사항
 모니터링에 그치지않고, 위험상황분석을 통해 보호자에게 위험시 사용자에 대한 위험정도와, 사용자의 위치를 알림으로 줄수있는 서비스를 추가 및 개선이 필요하다.
