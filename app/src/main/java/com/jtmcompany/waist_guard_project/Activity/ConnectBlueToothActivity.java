@@ -27,7 +27,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 
 //블루투스 연결 액티비티
-public class UserServiceActivity extends AppCompatActivity implements View.OnClickListener {
+public class ConnectBlueToothActivity extends AppCompatActivity implements View.OnClickListener {
     private BluetoothSPP bt;
     private Foreground_Service mservice=null;
     private boolean mbound=false;
@@ -115,8 +115,8 @@ public class UserServiceActivity extends AppCompatActivity implements View.OnCli
         };
     }
 
-    //브로드캐스트 관련코드
-    //포그라운드서비스에서 블루투스가연결되면 메시지보냄-> 메인엑티비티에서 메시지수신후 화면전환
+
+    /**포그라운드서비스에서 블루트스가 연결됬다는 메시지를 수신(BroadCast) **/
     private void registerReceiver(){
         if(mReceiver !=null) return;
         final IntentFilter mFilter=new IntentFilter();
@@ -189,7 +189,7 @@ public class UserServiceActivity extends AppCompatActivity implements View.OnCli
             }
         }else if(v==logoutBtn){
             FirebaseAuth.getInstance().signOut();
-            Intent intent=new Intent(getApplicationContext(), LoginActivity.class);
+            Intent intent=new Intent(getApplicationContext(), StartActivity.class);
             startActivity(intent);
             finish();
         }

@@ -103,50 +103,7 @@ public class BodyInfoFragment extends Fragment {
 
             }
         });
-/*
-        //지속적으로 UI갱신을위해 스레드실행
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!Thread.interrupted()) {
-                    try {
-                        Thread.sleep(1000);
-                        //화면전환되었을때 스레드중지(컨텍스트가 NULL일때)
-                        //컨텍스트는 OnAttach()에서 엑티비티의 컨텍스트를받고, onDetach()를하고 컨텍스트는 NULL이됨
-                        if (getContext() == null) {
-                            Log.d("TAKMIN", "NULL");
-                            return;
-                        } else
-                            Log.d("TAKMIN", "NO");
 
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                SharedPreferences auto = activity.getSharedPreferences("auto", activity.MODE_PRIVATE);
-                                String mfall = auto.getString("fall", null);
-                                int mtemp = auto.getString("temp", 0);
-                                int mheart = auto.getString("heart", 0);
-                                Log.d("TAKMIN", "TEST: " + mheart);
-                                heart_progress.setProgress(Integer.parseInt(mheart));
-                                heart_text.setText(mheart);
-                                temp_progress.setProgress(Integer.parseInt(mtemp));
-                                temp_text.setText(mtemp);
-                                fall_text.setText(mvibration);
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        Log.d("TAKMIN", "Interrupt");
-                    } catch (NullPointerException e) {
-                        Log.d("TAKMIN", "에러");
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-
-
- */
     }
 
     @Override

@@ -112,7 +112,7 @@ String user_kinds;
 
     //리싸이클러뷰에 있는 아이템의 친구수락버튼을 누르면 각유저 DB의 friend차일드에 추가됨
     @Override
-    public void onButtonClicked(int position, String name,String uid) {
+    public void onAcceptBtClicked(int position, String name,String uid) {
        Log.d("tak",name+position);
 
         //내 친구목록창입장
@@ -125,5 +125,12 @@ String user_kinds;
         myUid_Name.put(Myname,MyUid);
         mdatabase.child("유저").child(object_user_kinds).child(uid).child("friend").updateChildren(myUid_Name);
 
+    }
+
+    //친구거절
+    @Override
+    public void onDenyBtClicked(int position, String name, String Uid) {
+        //받은 친구요청 목록에서 제거
+        mdatabase.child("유저").child(user_kinds).child(MyUid).child("receiveToRequest").child(name).removeValue();
     }
 }

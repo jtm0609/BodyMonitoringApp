@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //브로드캐스트리시버등록
-    //포그라운드서비스에서 블루투스 연결이 끊어지면 메시지보냄-> 메인엑티비티로돌아감
+    //포그라운드서비스에서 블루투스 연결이 끊어지면 메시지보냄-> UserServiceActivity엑티비티로돌아감
     private void registerReceiver(){
         if(mReceiver !=null) return;
         final IntentFilter mFilter= new IntentFilter();
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
                 public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals(BROADCAST_MESSAGE_DISCONNECT)){
-                    Intent sensorintent = new Intent(getApplicationContext(), UserServiceActivity.class);
+                    Intent sensorintent = new Intent(getApplicationContext(), ConnectBlueToothActivity.class);
                     startActivity(sensorintent);
 
                     finish();
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId()==R.id.logout_button) {
             FirebaseAuth.getInstance().signOut();
-            Intent intent=new Intent(this,LoginActivity.class);
+            Intent intent=new Intent(this, StartActivity.class);
             startActivity(intent);
             finish();
 

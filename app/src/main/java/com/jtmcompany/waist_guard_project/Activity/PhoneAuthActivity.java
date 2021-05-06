@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -34,8 +33,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jtmcompany.waist_guard_project.Model.User;
 import com.jtmcompany.waist_guard_project.R;
+import com.jtmcompany.waist_guard_project.TimerHandler;
 
-import java.lang.ref.WeakReference;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -58,14 +57,14 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
     private RadioButton user_RadioBt, guardian_RadioBt;
     private ViewGroup outhLayout;
     SharedPreferences sharedpref;
-
+    private final TimerHandler mHandler= new TimerHandler(this);
     /**
     * 파이어베이스 전화번호입력후 sms를받아 인증하는방식
     * 호출순서 : 1. verifyPhoneNumber(): 전화번호가 적절한지 확인 및 옵션 설정
      *          2.onCodesent(): 인증번호가 보내지면 호출되며, 인증id를 파라미터로 전달받는다
      *          (3. 휴대폰 인증코드를 자동인식 한다면 onVerificationCompleted() 호출)
-     *          4. signinWithPhoneAuthCredential() : 인증id와 입력한인증번호로 PhoneAuthCredential 객체를 만들고 회원가입신청한다.
-     *          5. FirebaseAuth가 그 Credential을 보고 맞는 Credential인지 유효한지 확인하고 로그인콜백 여부를 결정한다.
+     *          4. verifyAuthCode: 인증id와 입력한인증번호로 PhoneAuthCredential 객체를 만들고 회원가입신청한다.
+     *          5.  signinWithPhoneAuthCredential(): FirebaseAuth가 그 Credential을 보고 맞는 Credential인지 유효한지 확인하고 로그인콜백 여부를 결정한다.
     */
 
     @Override
@@ -114,16 +113,13 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
 
         /**사용자가 인증하기 버튼을 누르면 콜백 호출*/
         authCallback = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            //즉시인증(인증코드를 보내거나 입력하지않고 전화번호를즉시인증 or 자동으로 수신되는 SMS를 감지하여 사용자의 개입없이 인증을 수행
+            //즉시인증(자동으로 수신되는 SMS를 감지하여 사용자의 개입없이 인증을 수행)
             //이메소드가 호출되면 PhoneAuthCredential 객체가 즉시 만들어져서, 파라미터로 전달된다.
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
                 signInwithPhoneAuthCrdential(credential);
-                Log.d(TAG, "onVerificationCompleted");
-                cancelResendTimer(); //성공시 타이머중지
+                pauseTimer(); //성공시 타이머중지
 
-                resend_button.setVisibility(View.GONE);
-                request_button.setVisibility(View.VISIBLE);
                 Toast.makeText(getApplicationContext(),"휴대폰의 SMS를 자동으로감지하여 인증완료!",Toast.LENGTH_LONG).show();
             }
 
@@ -131,13 +127,10 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 Log.d(TAG, "실패");
-                //실패시 타이머중지
-                cancelResendTimer();
+                pauseTimer();  //실패시 타이머중지
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {Log.d(TAG, "Invalid phone number."); }
                 else if (e instanceof FirebaseTooManyRequestsException) { Log.d(TAG, "SMS Quota exceeded."); }
 
-                //메시지전송실패시 전화번호입력창과 인증번호요청버튼일 활성화되고
-                //인증번호입력창이 비활성화되고, 인증번호확인버튼이 비활성화됨
                 mPhone_number.setEnabled(true);
                 request_button.setEnabled(true);
                 verify_Button.setEnabled(false);
@@ -159,11 +152,8 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
                 mVerifyId = verificationId;
                 mResendToken = forceResendingToken;
 
-                //메시지가보내지면 인증번호입력창이 활성화됨
                 verify_Button.setEnabled(true);
                 verify_code.setEnabled(true);
-
-                //인증번호요청버튼 사라지고 재전송버튼보이게하기
                 request_button.setVisibility(View.GONE);
                 resend_button.setVisibility(View.VISIBLE);
 
@@ -188,15 +178,17 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
                     user.setName(mName.getText().toString());
                     user.setPhoneNumber(mPhone_number.getText().toString());
 
-                    if(user_RadioBt.isChecked()){ //사용자 라디오버튼이 눌려있다면
-                        final Intent intent = new Intent(PhoneAuthActivity.this, UserServiceActivity.class);
+                    //사용자 라디오버튼이 눌려있다면
+                    if(user_RadioBt.isChecked()){
+                        final Intent intent = new Intent(PhoneAuthActivity.this, ConnectBlueToothActivity.class);
 
                         //User클래스의 해쉬맵을이용하지않고 아래줄처럼만해도 똑같이 동작함
                         //mDatabase.child("유저").child("사용자").push().setValue(mPhone_number.getText().toString());
                         sharedprefEdit.putBoolean("isGuardian",false);
                         sharedprefEdit.commit();
 
-                        checkMemberUser(user,"사용자");
+                        //가입한 유저가 DB에 있는지 검사
+                        checkUserDB(user,"사용자");
                         startActivity(intent);
                         finish();
 
@@ -209,7 +201,8 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
                         sharedprefEdit.putBoolean("isGuardian",true);
                         sharedprefEdit.commit();
 
-                        checkMemberUser(user,"보호자");
+                        //가입한 유저가 DB에 있는지 검사
+                        checkUserDB(user,"보호자");
                         startActivity(intent);
                         finish();
                     }
@@ -219,14 +212,14 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
         };
     }
 
-    //FirebaseAuth가 그 Credential을 보고 맞는 Credential인지 유효한지 확인하고 로그인콜백 여부를 결정
+    //Firebase인증 서버에서 전달받은 Credential이 올바른지 확인하고 로그인 여부를 결정
     private void signInwithPhoneAuthCrdential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(onCompleteListener);
     }
 
     //파이어베이스에 가입된유저인지 체크
-    void checkMemberUser(final User user, final String userType){
+    void checkUserDB(final User user, final String userType){
         //UID조회
         mDatabase.child("유저").child(userType).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -252,7 +245,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
     }
 
     //입력한 인증번호와 메시지인증번호를 확인하는코드
-    private void verifyPhoneNumberWithCode(String verificationId, String code) {
+    private void verifyAuthCode(String verificationId, String code) {
         //인증ID+ 입력한 인증코드를 통해 Credential을 만든다.
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
 
@@ -273,8 +266,14 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
             return "";
         }
     }
+
+
+
+
+
+    /** 인증번호 전송 요청 **/
     // 매개변수로받은 사용자의 전화번호를 확인하도록 요청->oncodesent()
-    private void startPhoneVerification(String phoneNumber) {
+    private void sendAuthCode(String phoneNumber) {
         String modiPhone = modifyPhoneNumber(phoneNumber);
 
         if (!modiPhone.equals("")) {
@@ -283,8 +282,12 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    //인증번호를 재전송하는 코드
-    private void resendVerificationCode(String phoneNumber, PhoneAuthProvider.ForceResendingToken token) {
+
+
+
+
+    /** 인증번호 재전송 요청**/
+    private void resendAuthCode(String phoneNumber, PhoneAuthProvider.ForceResendingToken token) {
         verify_Button.setEnabled(true);
         String modiPhone = modifyPhoneNumber(phoneNumber);
         if (!modiPhone.equals(""))
@@ -292,7 +295,8 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-    private final MyHandler mHandler= new MyHandler(this);
+
+
 
     //핸들러에게 메세지전송-> 핸들러에서 HandleMessage()가호출됨
     private void startTimer() {
@@ -310,8 +314,12 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
         timer.schedule(TT,0,1000); //Timer을 1초를 주기로 실행
     }
 
-    //타이머중지 : for 메모리누수 방지를 위해 인증완료나 인증실패시 이함수를 호출시킴
-    private void cancelResendTimer(){
+
+
+
+    /** 타이머 중지 **/
+    //for 메모리누수 방지를 위해 인증완료나 인증실패시 이함수를 호출시킴
+    private void pauseTimer(){
         resendTime=20;
         try{
             timer.cancel();
@@ -322,22 +330,31 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
         resend_button.setText("재전송");
     }
 
+
+
+
     @Override
     public void onClick(View v) {
         if(v==request_button) { //인증시작
-            startPhoneVerification(mPhone_number.getText().toString());
+            sendAuthCode(mPhone_number.getText().toString());
             outhLayout.setVisibility(View.VISIBLE);
 
+            //재 전송버튼
             //과거 인증번호요청했을때의 onCodeSent()에서 저장했던 토큰을 매개변수로전달
         }else if(v==resend_button){
-            resendVerificationCode(mPhone_number.getText().toString(), mResendToken);
+            resendAuthCode(mPhone_number.getText().toString(), mResendToken);
+
+            //확인 버튼
         }else if(v==verify_Button){
             //입력한 인증번호와 인증ID를이용하여 PhoneAuthCredential객체를만들기위해 다음메소드호출->기존에있던 PhoneAuthCredential객체와 비교
-            verifyPhoneNumberWithCode(mVerifyId, verify_code.getText().toString());
+            verifyAuthCode(mVerifyId, verify_code.getText().toString());
         }
     }
 
-    //라디오 버튼 변경 리스너
+
+
+
+    /** 라디오 버튼 변경 콜백 **/
     @Override
     public void onCheckedChanged(android.widget.RadioGroup group, int id) {
         if (group == RadioGroup) {
@@ -354,24 +371,8 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    //핸들러 클래스
-    private static class MyHandler extends Handler{
-        //메모리 누수를 막기위해 WeakReference를 사용
-        //엑티비티가 화면에서 사라졌을때 정상적으로 메모리 해제되어야하는데 다른쓰레드가 잡고있으면 -> 메모리누수원인
-        private final WeakReference<PhoneAuthActivity> mActivty;
 
-        public MyHandler(PhoneAuthActivity activity){
-            mActivty=new WeakReference<>(activity);
-        }
 
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            PhoneAuthActivity activity = mActivty.get();
-            if(activity!=null){
-                activity.handleMessage(msg);
-            }
-        }
-    }
 
     //메인엑티비티 메소드
     //핸들러에서 1초주기로 이함수를호출함

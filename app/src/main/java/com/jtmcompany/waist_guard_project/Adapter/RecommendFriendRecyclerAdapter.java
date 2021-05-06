@@ -18,7 +18,7 @@ import java.util.List;
 public class RecommendFriendRecyclerAdapter extends RecyclerView.Adapter<RecommendFriendRecyclerAdapter.ViewHoloder>{
 
     public interface MyRecyclerViewClickListener{
-        void onButtonClicked(int position, String name);
+        void onButtonClicked(int position, String phone);
     }
 
     private MyRecyclerViewClickListener mListener;
@@ -48,7 +48,7 @@ public class RecommendFriendRecyclerAdapter extends RecyclerView.Adapter<Recomme
             holder.Button.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
-                    mListener.onButtonClicked(holder.getAdapterPosition(),holder.Name_text.getText().toString());
+                    mListener.onButtonClicked(holder.getAdapterPosition(),holder.Phone_text.getText().toString());
                 }
             });
         }

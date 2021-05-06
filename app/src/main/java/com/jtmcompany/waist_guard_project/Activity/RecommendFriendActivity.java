@@ -145,11 +145,20 @@ public class RecommendFriendActivity extends AppCompatActivity implements Recomm
                 Log.d("Token",FirebaseAuth.getInstance().getUid());
                 for(DataSnapshot data: dataSnapshot.getChildren()){
                     User friendUser=data.getValue(User.class);
+
+                    //이미 친구라면 스킵
+                    if(data.child("friend").child("독거노인 요양관리사").exists()){
+                        Log.d("taak","이미친구임!!");
+                        continue;
+                    }
+
                     for(int i=0; i<friend_Datas.size(); i++){
+                        //연락처에 있는 번호들과 DB에있는 번호와 같다면-> 추천친구 등록
                         if(friend_Datas.get(i).getPhoneNumber().equals(friendUser.getPhoneNumber())){
                             Log.d("TRUE","TRUE");
                             adapter.addItem(new User(friendUser.getName(), friendUser.getPhoneNumber()));
                             recyclerView.setAdapter(adapter);
+                            break;
                         }
                         else{ Log.d("TRUE","FALSE"); }
                     }
@@ -163,7 +172,7 @@ public class RecommendFriendActivity extends AppCompatActivity implements Recomm
 
     //버튼콜백 : 친구신청버튼을 누르면 -> 그사람 Uid를 참조해서 토큰을 얻어오고, 토큰을 이용해서 sendPostToFcm메소드호출
     @Override
-    public void onButtonClicked(int position, final String name) {
+    public void onButtonClicked(int position, final String phone) {
         Toast.makeText(this, "버튼"+position, Toast.LENGTH_SHORT).show();
         mDatabase.child("유저").child(user_kinds).child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -177,10 +186,10 @@ public class RecommendFriendActivity extends AppCompatActivity implements Recomm
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot data: dataSnapshot.getChildren()) {
                             final User receive_user=data.getValue(User.class);
-                            String receive_name=receive_user.getName();
-                            if (name.equals(receive_name)) {
-                                Log.d("test3","name:"+ name);
-                                Log.d("test3","receivename:"+ receive_name);
+                            String receive_phone=receive_user.getPhoneNumber();
+                            if (phone.equals(receive_phone)) {
+                                //Log.d("test3","name:"+ name);
+                                //Log.d("test3","receivename:"+ receive_name);
                                 Log.d("test3","receveUid:"+ receive_user.getUserUid());
                                 String receive_User_Uid =receive_user.getUserUid();
                                 Log.d("Token","accept_User_Uid: "+ data.getKey());

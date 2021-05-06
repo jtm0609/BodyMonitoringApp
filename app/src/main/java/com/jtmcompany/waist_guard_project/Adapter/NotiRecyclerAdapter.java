@@ -24,7 +24,8 @@ public class NotiRecyclerAdapter extends RecyclerView.Adapter<NotiRecyclerAdapte
     Map<String,String> name_Uid=new HashMap<>();
 
     public interface NotiRecyclerViewClcikListener{
-        void onButtonClicked(int position, String name,String Uid);
+        void onAcceptBtClicked(int position, String name,String Uid);
+        void onDenyBtClicked(int position, String name,String Uid);
     }
 
     private NotiRecyclerViewClcikListener mListener;
@@ -49,7 +50,15 @@ public class NotiRecyclerAdapter extends RecyclerView.Adapter<NotiRecyclerAdapte
                 @Override
                 public void onClick(View view) {
                     String Uid= name_Uid.get(name);
-                    mListener.onButtonClicked(holder.getAdapterPosition(),name,Uid);
+                    mListener.onAcceptBtClicked(holder.getAdapterPosition(),name,Uid);
+                }
+            });
+
+            holder.friendDenyBt.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    String Uid= name_Uid.get(name);
+                    mListener.onDenyBtClicked(holder.getAdapterPosition(),name,Uid);
                 }
             });
         }

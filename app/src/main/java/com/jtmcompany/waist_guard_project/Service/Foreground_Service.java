@@ -19,7 +19,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.jtmcompany.waist_guard_project.Activity.UserServiceActivity;
+import com.jtmcompany.waist_guard_project.Activity.ConnectBlueToothActivity;
 import com.jtmcompany.waist_guard_project.R;
 
 import java.util.HashMap;
@@ -45,11 +45,15 @@ public class Foreground_Service extends Service {
         }
     }
 
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
+
+
 
     //서비스종료시점
     @Override
@@ -63,6 +67,8 @@ public class Foreground_Service extends Service {
         return super.onUnbind(intent);
     }
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -70,8 +76,7 @@ public class Foreground_Service extends Service {
         sensorInfo_map= new HashMap<>();
         bt= new BluetoothSPP(this);
 
-
-        //서비스에서 블루투스연결관리
+        /** 블루투스가 연결됐으면 연결됐다고 송신(BroadCast) **/
         bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
             public void onDeviceConnected(String name, String address) { //연결됐을 때
                 Toast.makeText(getApplicationContext()
@@ -85,12 +90,12 @@ public class Foreground_Service extends Service {
                 auto_convert.putBoolean("mconnected", mconnected);
                 auto_convert.commit();
 
-
                 //브로드캐스트메시지전송
                 Intent intent = new Intent(BROADCAST_MESSAGE_CONNECT);
                 sendBroadcast(intent);
             }
 
+            /** 블루투스가 연결해제-> 연결해제 됬다고 송신(BroadCast) **/
             public void onDeviceDisconnected() { //연결해제
                 Toast.makeText(getApplicationContext()
                         , "Connection lost", Toast.LENGTH_SHORT).show();
@@ -113,11 +118,12 @@ public class Foreground_Service extends Service {
         });
     }
 
+
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
         startForegroundService();
-
-
         //테스트
         sensorInfo_map.put("pulse","65");
         sensorInfo_map.put("temp","36");
@@ -127,13 +133,13 @@ public class Foreground_Service extends Service {
 
         //서비스로 데이터 실시간으로 수신
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
-            public void onDataReceived(byte[] data, String message) {
+            public void onDataReceived(byte[] data, String receiveMessage) {
                 Log.d("tak","연결된 디바이스: "+bt.getConnectedDeviceName());
                 SharedPreferences auto = getSharedPreferences("bt_connect?", Activity.MODE_PRIVATE);
                 if(auto.getBoolean("mconnected", false)==false) bt.disconnect();
 
-                //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                String[] s = message.split("/");
+                //아두이노에게 받은 데이터 파싱
+                String[] s = receiveMessage.split("/");
                 String pulse=s[0];
                 String temp = s[1];
                 int vibration = Integer.parseInt(s[2]);
@@ -144,23 +150,11 @@ public class Foreground_Service extends Service {
                 sensorInfo_map.put("temp",temp);
 
 
-                /*
-                SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
-                SharedPreferences.Editor autoLogin = auto.edit();
-                autoLogin.putString("temp", temp);
-                autoLogin.putString("heart",pulse);
-                autoLogin.commit();
-
-                 */
                 //충격검사
                 if (vibration == 1) {
                     sensorInfo_map.put("vibration","감지함");
-                    //autoLogin.putString("fall", "감지함");
-                    //autoLogin.commit();
                 } else {
                     sensorInfo_map.put("vibration","감지못함");
-                    //autoLogin.putString("fall", "감지못함");
-                    //autoLogin.commit();
                 }
 
 
@@ -172,13 +166,15 @@ public class Foreground_Service extends Service {
         return START_NOT_STICKY;
     }
 
+
+
     private void startForegroundService(){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setContentTitle("포그라운드 서비스");
         builder.setContentText("포그라운드 서비스 실행중");
 
-        Intent notificationIntent=new Intent(this, UserServiceActivity.class);
+        Intent notificationIntent=new Intent(this, ConnectBlueToothActivity.class);
         //알림을 눌렀을때 대기하고있던 인텐트가 실행
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
         builder.setContentIntent(pendingIntent);
@@ -191,6 +187,8 @@ public class Foreground_Service extends Service {
 
         startForeground(1,builder.build());
     }
+
+
 
     //블루투스SPP객체 리턴
     public BluetoothSPP getBlueToothSPP(){
