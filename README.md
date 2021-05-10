@@ -42,6 +42,19 @@
 ![컴공설 nerd설계](https://user-images.githubusercontent.com/48284360/98101591-c9f3d680-1ed5-11eb-90ec-a6b98c9763d0.png)<br><br>
 
 
+## SW 설계(시퀀스 다이어그램)
+<div>
+  <img  src="https://user-images.githubusercontent.com/48284360/117598450-cee65b00-b182-11eb-8226-8e89efca5c48.png"> <br><br><br><br><br>
+<img src="https://user-images.githubusercontent.com/48284360/117598458-d1e14b80-b182-11eb-9fd6-523c2d9423e8.png"> <br><br><br><br><br>
+<img  src="https://user-images.githubusercontent.com/48284360/117598461-d279e200-b182-11eb-85b6-fbb8f5d4fa4b.png"> <br><br><br><br><br>
+<img  src="https://user-images.githubusercontent.com/48284360/117598464-d3ab0f00-b182-11eb-9dad-a8a1d8695714.png"> <br><br><br><br><br>
+<img  src="https://user-images.githubusercontent.com/48284360/117598469-d443a580-b182-11eb-8b53-6892554430f3.png"> <br><br><br><br><br>
+<img  src="https://user-images.githubusercontent.com/48284360/117598472-d4dc3c00-b182-11eb-967c-87f4d7e1d9fe.png"> <br><br><br>
+</div>
+
+## Database
+![DB설계](https://user-images.githubusercontent.com/48284360/117599003-e540e680-b183-11eb-939d-5109f650910e.png)
+<br><br><br>
 
 ## 스크린샷
 <div>
