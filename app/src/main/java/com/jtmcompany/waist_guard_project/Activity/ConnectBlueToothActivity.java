@@ -181,12 +181,10 @@ public class ConnectBlueToothActivity extends AppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         if(v==connectBtn){
-            if (mservice.getBlueToothSPP().getServiceState() == BluetoothState.STATE_CONNECTED) { //연결이되어있다면
-                mservice.getBlueToothSPP().disconnect(); //연결끊음
-            } else { //연결이 안되있다면
-                Intent intent = new Intent(getApplicationContext(), DeviceList.class);
-                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
-            }
+            //페어링 가능한 리스트 출력
+            Intent intent = new Intent(getApplicationContext(), DeviceList.class);
+            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+
         }else if(v==logoutBtn){
             FirebaseAuth.getInstance().signOut();
             Intent intent=new Intent(getApplicationContext(), StartActivity.class);
@@ -195,7 +193,4 @@ public class ConnectBlueToothActivity extends AppCompatActivity implements View.
         }
     }
 }
-
-
-
 

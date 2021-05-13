@@ -8,7 +8,7 @@
 사용자는 자신의 생채 상태를 모니터링 할 수있으며, 보호자는 사용자를 친구로 등록하여 사용자의 생체정보를 실시간으로 모니터링 할 수 있다..<br><br>
 
 ### 프로젝트 기간
-2020.02.01 ~ 2020 04.01<br><br>
+2019.09.23 ~ 2019 10.23<br><br>
 
 ### 역할 배정
 앱개발 1명, 회로개발1명<br><br>
@@ -20,10 +20,10 @@
 * 파이어베이스 RealTimeDB를 통해 유저(사용자, 보호자) 관리
 * 아두이노와 앱과의 연동 구현(블루투스 통신)
 * 센서를 통해 실시간으로 생체정보(심박수, 체온, 낙상) 모니터링 가능
-* Service와 BroadCast Receiver를 통해 항상 센서가 동작하게 구현 및 블루투스 연결, 끊김 체크
+* Service로 항상 센서가 동작하게 구현 및 BroadCast Receiver를 통해 블루투스 연결, 끊김 체크
 * 친구목록 기능 구현
 * 친구요청 기능 구현 + FCM을 통한 친구요청 알림서비스 구현
-* 추천 친구 기능 구현(컨텐트 프로바이더 사용)
+* 추천 친구 기능 구현(Content Provider 사용)
 * 친구가된 보호자는 사용자의 생체정보를 실시간 모니터링 가능<br><br>
 
 
@@ -38,10 +38,29 @@
 * Glide
 <br><br>
 
+## 프로젝트 사이트맵
+  ![프로젝트 사이트맵](https://user-images.githubusercontent.com/48284360/118117736-f52c2500-b426-11eb-8a40-e853f63e6986.png)<br><br>
+  
 ## 시스템 아키텍처
 ![컴공설 nerd설계](https://user-images.githubusercontent.com/48284360/98101591-c9f3d680-1ed5-11eb-90ec-a6b98c9763d0.png)<br><br>
 
 
+## SW 설계(시퀀스 다이어그램)
+<div>
+  <img  src="https://user-images.githubusercontent.com/48284360/117598450-cee65b00-b182-11eb-8226-8e89efca5c48.png"> <br><br><br><br><br>
+<img src="https://user-images.githubusercontent.com/48284360/117598458-d1e14b80-b182-11eb-9fd6-523c2d9423e8.png"> <br><br><br><br><br>
+<img src="https://user-images.githubusercontent.com/48284360/118117752-f9584280-b426-11eb-87a2-deba4fe75668.png"> <br><br><br><br><br>
+
+
+<img  src="https://user-images.githubusercontent.com/48284360/117598461-d279e200-b182-11eb-85b6-fbb8f5d4fa4b.png"> <br><br><br><br><br>
+<img  src="https://user-images.githubusercontent.com/48284360/117598464-d3ab0f00-b182-11eb-9dad-a8a1d8695714.png"> <br><br><br><br><br>
+<img  src="https://user-images.githubusercontent.com/48284360/117598469-d443a580-b182-11eb-8b53-6892554430f3.png"> <br><br><br><br><br>
+<img  src="https://user-images.githubusercontent.com/48284360/117598472-d4dc3c00-b182-11eb-967c-87f4d7e1d9fe.png"> <br><br><br>
+</div>
+
+## Database
+![DB설계](https://user-images.githubusercontent.com/48284360/117599003-e540e680-b183-11eb-939d-5109f650910e.png)
+<br><br><br>
 
 ## 스크린샷
 <div>

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -157,8 +158,14 @@ public class Foreground_Service extends Service {
                     sensorInfo_map.put("vibration","감지못함");
                 }
 
-
+                //위험 상황시 친구들에게 자동 문자메시지 전송(구현중)
                 mDatabasae.child("유저").child("사용자").child(myUid).child("sensorInfo").updateChildren(sensorInfo_map);
+                if(Integer.parseInt(temp) >=37.5 || Integer.parseInt(pulse)>=80){
+                    String phoneNumber="";
+                    String name=mDatabasae.child("유저").child("사용자").child(myUid).child("name").getKey();
+                    SmsManager sms=SmsManager.getDefault();
+                    sms.sendTextMessage(phoneNumber,null,name+"환자가 현재 위독합니다.",null,null);
+                }
 
             }
         });
@@ -208,4 +215,3 @@ public class Foreground_Service extends Service {
     }
 
 }
-
